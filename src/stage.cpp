@@ -14,22 +14,23 @@ namespace boo
         }
         if (!(sarc[0] == 'S' && sarc[1] == 'A' && sarc[2] == 'R' && sarc[3] == 'C')) return 1;
         oead::Sarc archive(sarc);
+
         if (Name.empty()) return 2;
 
-        std::stringstream stagedata_byml;
-        stagedata_byml << Name << ".byml";
+        std::stringstream stagedata_bymlss;
+        stagedata_bymlss << Name << "Map.byml";
+        std::string stagedata_byml = stagedata_bymlss.str();
 
         oead::Byml stagedata;
 
         for (oead::Sarc::File file : archive.GetFiles())
         {
-            if (file.name == stagedata_byml.str())
+            if (file.name == stagedata_byml)
             {
                 stagedata = oead::Byml::FromBinary(file.data);
                 break;
             }
         }
-        stagedata_byml.str(std::string());
 
         data.Load(stagedata);
 
@@ -38,7 +39,7 @@ namespace boo
 
     u8 boo::StageData::Load(oead::Byml &data)
     {
-        
+
         return 0;
     }
 }
