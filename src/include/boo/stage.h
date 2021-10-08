@@ -35,6 +35,8 @@ namespace boo
         UnitConfig UnitConfig;
         std::string UnitConfigName;
         std::string comment;
+
+        std::map<std::string, oead::Byml> extra_params;
     };
 
     struct ObjectList
@@ -50,7 +52,7 @@ namespace boo
     class StageData
     {
     public:
-        u8 LoadNoOPD(oead::Byml& data);
+        u8 Load(oead::Byml& data);
         oead::Byml Save();
 
         std::vector<StageDataEntry> entries;

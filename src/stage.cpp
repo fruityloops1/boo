@@ -38,11 +38,11 @@ namespace boo
 
         if (!loaded) return 1;
         
-        data.LoadNoOPD(stagedata);
+        data.Load(stagedata);
         return 0;
     }
 
-    u8 boo::StageData::LoadNoOPD(oead::Byml& data)
+    u8 boo::StageData::Load(oead::Byml& data)
     {
         u32 i = 0;
         for (auto entry = data.GetArray().cbegin(); entry != data.GetArray().cend(); ++entry)
@@ -105,6 +105,17 @@ namespace boo
                     {
                         o.comment = object->GetHash().at("comment").GetString();
                     } catch(std::bad_variant_access& e) {o.comment = std::string();}
+
+                    for (auto param = object->GetHash().cbegin(); param != object->GetHash().cend(); ++param)
+                    {
+                        if (param->first != "Id" && param->first != "IsLinkDest" && param->first != "LayerConfigName"
+                         && param->first != "ModelName" && param->first != "PlacementFileName" && param->first != "Rotate"
+                         && param->first != "Scale" && param->first != "Translate" && param->first != "UnitConfig"
+                         && param->first != "UnitConfigName" && param->first != "comment" && param->first != "Links")
+                        {
+                            o.extra_params[param->first] = param->second;
+                        }
+                    }
                     
                     entries[i].object_lists[object_list->first].objects.push_back(o);
                 }
