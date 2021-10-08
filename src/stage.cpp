@@ -18,6 +18,8 @@ namespace boo
 
         oead::Byml stagedata;
 
+        bool loaded = false;
+
         for (oead::Sarc::File file : archive.GetFiles())
         {
             if (file.name.ends_with("Design.byml") || file.name.ends_with("Map.byml") || file.name.ends_with("Sound.byml"))
@@ -29,9 +31,12 @@ namespace boo
                 Name = std::string(temp);
 
                 stagedata = oead::Byml::FromBinary(file.data);
+                loaded = true;
                 break;
             }
         }
+
+        if (!loaded) return 1;
         
         data.LoadNoOPD(stagedata);
         return 0;
