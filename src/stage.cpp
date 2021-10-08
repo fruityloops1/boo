@@ -1,9 +1,9 @@
+#include <algorithm>
 #include <boo/stage.h>
 #include <oead/byml.h>
 #include <oead/sarc.h>
 #include <oead/yaz0.h>
-#include <sstream>
-
+#include <iostream>
 namespace boo
 {
     u8 boo::Stage::Load(std::vector<u8> sarc)
@@ -16,26 +16,23 @@ namespace boo
         if (!(sarc[0] == 'S' && sarc[1] == 'A' && sarc[2] == 'R' && sarc[3] == 'C')) return 1;
         oead::Sarc archive(sarc);
 
-        if (Name.empty()) return 2;
-
-        std::string stagedesigndata_byml = Name;
-        stagedesigndata_byml.append("Design.byml");
-        std::string stagemapdata_byml = Name;
-        stagemapdata_byml.append("Map.byml");
-        std::string stagesounddata_byml = Name;
-        stagesounddata_byml.append("Sound.byml");
-
         oead::Byml stagedata;
 
         for (oead::Sarc::File file : archive.GetFiles())
         {
-            if (file.name == stagedesigndata_byml || file.name == stagemapdata_byml || file.name == stagesounddata_byml)
+            if (file.name.ends_with("Design.byml") || file.name.ends_with("Map.byml") || file.name.ends_with("Sound.byml"))
             {
+                std::string temp(file.name);
+                if (file.name.ends_with("Design.byml")) temp = temp.substr(0, temp.size() - 11);
+                else if (file.name.ends_with("Map.byml")) temp = temp.substr(0, temp.size() - 8);
+                else if (file.name.ends_with("Sound.byml")) temp = temp.substr(0, temp.size() - 10);
+                Name = std::string(temp);
+
                 stagedata = oead::Byml::FromBinary(file.data);
                 break;
             }
         }
-
+        
         data.LoadNoOPD(stagedata);
         return 0;
     }
