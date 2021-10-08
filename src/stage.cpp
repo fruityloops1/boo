@@ -3,7 +3,7 @@
 #include <oead/byml.h>
 #include <oead/sarc.h>
 #include <oead/yaz0.h>
-#include <iostream>
+
 namespace boo
 {
     u8 boo::Stage::Load(std::vector<u8> sarc)
