@@ -1,3 +1,6 @@
 [submodule "lib/oead"]
 	path = lib/oead
 	url = http://github.com/zeldamods/oead
+[submodule "lib/inih"]
+	path = lib/inih
+	url = https://github.com/jtilly/inih
