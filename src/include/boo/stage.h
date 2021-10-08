@@ -50,7 +50,7 @@ namespace boo
     class StageData
     {
     public:
-        u8 Load(oead::Byml& data);
+        u8 LoadNoOPD(oead::Byml& data);
         oead::Byml Save();
 
         std::vector<StageDataEntry> entries;

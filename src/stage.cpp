@@ -33,11 +33,11 @@ namespace boo
             }
         }
 
-        data.Load(stagedata);
+        data.LoadNoOPD(stagedata);
         return 0;
     }
 
-    u8 boo::StageData::Load(oead::Byml &data)
+    u8 boo::StageData::LoadNoOPD(oead::Byml& data)
     {
         u32 i = 0;
         for (auto entry = data.GetArray().cbegin(); entry != data.GetArray().cend(); ++entry)
@@ -58,6 +58,42 @@ namespace boo
                     } catch(std::bad_variant_access& e) {o.ModelName = std::string();}
 
                     o.PlacementFileName = object->GetHash().at("PlacementFileName").GetString();
+                    
+                    o.Rotate.x = object->GetHash().at("Rotate").GetHash().at("X").GetFloat();
+                    o.Rotate.y = object->GetHash().at("Rotate").GetHash().at("Y").GetFloat();
+                    o.Rotate.z = object->GetHash().at("Rotate").GetHash().at("Z").GetFloat();
+
+                    o.Scale.x = object->GetHash().at("Scale").GetHash().at("X").GetFloat();
+                    o.Scale.y = object->GetHash().at("Scale").GetHash().at("Y").GetFloat();
+                    o.Scale.z = object->GetHash().at("Scale").GetHash().at("Z").GetFloat();
+
+                    o.Translate.x = object->GetHash().at("Translate").GetHash().at("X").GetFloat();
+                    o.Translate.y = object->GetHash().at("Translate").GetHash().at("Y").GetFloat();
+                    o.Translate.z = object->GetHash().at("Translate").GetHash().at("Z").GetFloat();
+
+                    o.UnitConfig.DisplayName = object->GetHash().at("UnitConfig").GetHash().at("DisplayName").GetString();
+
+                    o.UnitConfig.DisplayRotate.x = object->GetHash().at("UnitConfig").GetHash().at("DisplayRotate").GetHash().at("X").GetFloat();
+                    o.UnitConfig.DisplayRotate.y = object->GetHash().at("UnitConfig").GetHash().at("DisplayRotate").GetHash().at("Y").GetFloat();
+                    o.UnitConfig.DisplayRotate.z = object->GetHash().at("UnitConfig").GetHash().at("DisplayRotate").GetHash().at("Z").GetFloat();
+
+                    o.UnitConfig.DisplayScale.x = object->GetHash().at("UnitConfig").GetHash().at("DisplayScale").GetHash().at("X").GetFloat();
+                    o.UnitConfig.DisplayScale.y = object->GetHash().at("UnitConfig").GetHash().at("DisplayScale").GetHash().at("Y").GetFloat();
+                    o.UnitConfig.DisplayScale.z = object->GetHash().at("UnitConfig").GetHash().at("DisplayScale").GetHash().at("Z").GetFloat();
+
+                    o.UnitConfig.DisplayTranslate.x = object->GetHash().at("UnitConfig").GetHash().at("DisplayTranslate").GetHash().at("X").GetFloat();
+                    o.UnitConfig.DisplayTranslate.y = object->GetHash().at("UnitConfig").GetHash().at("DisplayTranslate").GetHash().at("Y").GetFloat();
+                    o.UnitConfig.DisplayTranslate.z = object->GetHash().at("UnitConfig").GetHash().at("DisplayTranslate").GetHash().at("Z").GetFloat();
+
+                    o.UnitConfig.GenerateCategory = object->GetHash().at("UnitConfig").GetHash().at("GenerateCategory").GetString();
+                    o.UnitConfig.ParameterConfigName = object->GetHash().at("UnitConfig").GetHash().at("ParameterConfigName").GetString();
+                    
+                    std::string PlacementTargetFile = object->GetHash().at("UnitConfig").GetHash().at("PlacementTargetFile").GetString();
+
+                    if (PlacementTargetFile == "Design") o.UnitConfig.PlacementTargetFile = boo::StageType::Design;
+                    else if (PlacementTargetFile == "Map") o.UnitConfig.PlacementTargetFile = boo::StageType::Map;
+                    else if (PlacementTargetFile == "Sound") o.UnitConfig.PlacementTargetFile = boo::StageType::Sound;
+
                     o.UnitConfigName = object->GetHash().at("UnitConfigName").GetString();
 
                     try
