@@ -18,15 +18,18 @@ namespace boo
 
         if (Name.empty()) return 2;
 
-        std::stringstream stagedata_bymlss;
-        stagedata_bymlss << Name << "Map.byml";
-        std::string stagedata_byml = stagedata_bymlss.str();
+        std::string stagedesigndata_byml = Name;
+        stagedesigndata_byml.append("Design.byml");
+        std::string stagemapdata_byml = Name;
+        stagemapdata_byml.append("Map.byml");
+        std::string stagesounddata_byml = Name;
+        stagesounddata_byml.append("Sound.byml");
 
         oead::Byml stagedata;
 
         for (oead::Sarc::File file : archive.GetFiles())
         {
-            if (file.name == stagedata_byml)
+            if (file.name == stagedesigndata_byml || file.name == stagemapdata_byml || file.name == stagesounddata_byml)
             {
                 stagedata = oead::Byml::FromBinary(file.data);
                 break;
