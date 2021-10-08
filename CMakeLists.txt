@@ -12,5 +12,5 @@ set(CMAKE_CXX_STANDARD 20)
 include_directories(src/include)
 include_directories(lib/inih)
 
-add_executable(boo src/boo.cpp src/stage.cpp src/config.cpp src/include/boo/config.h src/include/boo/stage.h)
+add_executable(boo src/boo.cpp src/config.cpp src/objparamdb.cpp src/stage.cpp src/include/boo/config.h src/include/boo/objparamdb.h src/include/boo/stage.h)
 target_link_libraries(boo PUBLIC oead)
