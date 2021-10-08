@@ -4,8 +4,8 @@
 #include <oead/byml.h>
 #include <oead/sarc.h>
 #include <oead/yaz0.h>
-#include <iostream>
-#include <variant>
+#include <string>
+
 namespace boo
 {
 
@@ -72,6 +72,75 @@ namespace boo
             }catch(...) {}
         }
         
+    }
+
+    std::map<oead::Byml::Type, std::string> boo::ObjectParameterDatabase::types_ts;
+    std::map<std::string, oead::Byml::Type> boo::ObjectParameterDatabase::types_st;
+
+    u8 boo::ObjectParameterDatabase::Load(std::string filename)
+    {
+        std::ifstream opd_file(filename);
+        for (std::string entry; std::getline(opd_file, entry);)
+        {
+            if (entry == "\n") continue;
+            std::string ParameterConfigName = entry.substr(0, entry.find(':'));
+            entry.erase(0, entry.find(':') + 1);
+            std::string param = entry.substr(0, entry.find(':'));
+            entry.erase(0, entry.find(':') + 1);
+            std::string type = std::string(entry);
+            try
+            {
+                opd[ParameterConfigName][param] = types_st.at(type);
+            } catch(std::out_of_range& e) {opd_file.close(); return 1;}
+        }
+        opd_file.close();
+        return 0;
+    }
+
+    u8 boo::ObjectParameterDatabase::Save(std::string filename)
+    {
+        std::ofstream opd_file(filename);
+        for (auto o = opd.cbegin(); o != opd.cend(); ++o)
+        {
+            for (auto p = o->second.cbegin(); p != o->second.cend(); ++p)
+            {
+                try
+                {
+                    opd_file << o->first << ":" << p->first << ":" << types_ts.at(p->second) << "\n";
+                } catch(std::out_of_range& e) {opd_file.close(); return 1;}
+            }
+        }
+        opd_file.close();
+        return 0;
+    }
+
+    boo::ObjectParameterDatabase::ObjectParameterDatabase()
+    {
+        types_ts[oead::Byml::Type::Null] = "null";
+        types_ts[oead::Byml::Type::String] = "string";
+        types_ts[oead::Byml::Type::Binary] = "binary";
+        types_ts[oead::Byml::Type::Array] = "array";
+        types_ts[oead::Byml::Type::Hash] = "hash";
+        types_ts[oead::Byml::Type::Bool] = "bool";
+        types_ts[oead::Byml::Type::Int] = "int";
+        types_ts[oead::Byml::Type::Float] = "float";
+        types_ts[oead::Byml::Type::UInt] = "uint";
+        types_ts[oead::Byml::Type::Int64] = "long";
+        types_ts[oead::Byml::Type::UInt64] = "ulong";
+        types_ts[oead::Byml::Type::Double] = "double";
+
+        types_st["null"] = oead::Byml::Type::Null;
+        types_st["string"] = oead::Byml::Type::String;
+        types_st["binary"] = oead::Byml::Type::Binary;
+        types_st["array"] = oead::Byml::Type::Array;
+        types_st["hash"] = oead::Byml::Type::Hash;
+        types_st["bool"] = oead::Byml::Type::Bool;
+        types_st["int"] = oead::Byml::Type::Int;
+        types_st["float"] = oead::Byml::Type::Float;
+        types_st["uint"] = oead::Byml::Type::UInt;
+        types_st["long"] = oead::Byml::Type::Int64;
+        types_st["ulong"] = oead::Byml::Type::UInt64;
+        types_st["double"] = oead::Byml::Type::Double;
     }
 
 }
