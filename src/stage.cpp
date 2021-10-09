@@ -23,8 +23,10 @@ namespace boo
         bool loaded = false;
 
         for (oead::Sarc::File file : archive.GetFiles())
-        {
             level_archive[std::string(file.name)] = std::vector<u8>(file.data.data(), file.data.data() + file.data.size());
+
+        for (oead::Sarc::File file : archive.GetFiles())
+        {
             if (file.name.ends_with("Design.byml") || file.name.ends_with("Map.byml") || file.name.ends_with("Sound.byml"))
             {
                 std::string temp(file.name);
