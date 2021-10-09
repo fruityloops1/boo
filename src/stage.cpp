@@ -149,7 +149,8 @@ namespace boo
                     
                         std::string PlacementTargetFile = object.GetHash().at("UnitConfig").GetHash().at("PlacementTargetFile").GetString();
 
-                        if (PlacementTargetFile == "Design") o.UnitConfig.PlacementTargetFile = boo::StageType::Design;
+                        if (PlacementTargetFile == "All") o.UnitConfig.PlacementTargetFile = boo::StageType::All;
+                        else if (PlacementTargetFile == "Design") o.UnitConfig.PlacementTargetFile = boo::StageType::Design;
                         else if (PlacementTargetFile == "Map") o.UnitConfig.PlacementTargetFile = boo::StageType::Map;
                         else if (PlacementTargetFile == "Sound") o.UnitConfig.PlacementTargetFile = boo::StageType::Sound;
 
@@ -250,7 +251,9 @@ namespace boo
                         b.GetHash()["UnitConfig"].GetHash()["GenerateCategory"] = object.UnitConfig.GenerateCategory;
                         b.GetHash()["UnitConfig"].GetHash()["ParameterConfigName"] = object.UnitConfig.ParameterConfigName;
 
-                        if (object.UnitConfig.PlacementTargetFile == boo::StageType::Design)
+                        if (object.UnitConfig.PlacementTargetFile == boo::StageType::All)
+                            b.GetHash()["UnitConfig"].GetHash()["PlacementTargetFile"] = std::string("All");
+                        else if (object.UnitConfig.PlacementTargetFile == boo::StageType::Design)
                             b.GetHash()["UnitConfig"].GetHash()["PlacementTargetFile"] = std::string("Design");
                         else if (object.UnitConfig.PlacementTargetFile == boo::StageType::Map)
                             b.GetHash()["UnitConfig"].GetHash()["PlacementTargetFile"] = std::string("Map");
