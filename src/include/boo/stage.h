@@ -29,6 +29,7 @@ namespace boo
         std::string Id;
         bool IsLinkDest;
         std::string LayerConfigName;
+        std::map<std::string, std::vector<Object>> Links;
         std::string ModelName;
         std::string PlacementFileName;
         oead::Vector3f Rotate, Scale, Translate;
@@ -63,8 +64,11 @@ namespace boo
     public:
         std::string Name;
         u8 Load(std::vector<u8> sarc);
+        std::vector<u8> Save();
 
         StageData data;
+        StageType type;
+        std::map<std::string, std::vector<u8>> level_archive;
     };
 
 }
