@@ -90,7 +90,7 @@ namespace boo
             writer.m_files[file->first] = file->second;
         }
         std::vector<u8> result = writer.Write().second;
-        return oead::yaz0::Compress(result, 0, 8);
+        return oead::yaz0::Compress(result, 0, 9);
     }
 
     u8 boo::StageData::Load(oead::Byml& data)
@@ -111,14 +111,20 @@ namespace boo
                         o.LayerConfigName = object.GetHash().at("LayerConfigName").GetString();
                     
                         for (auto h = object.GetHash().at("Links").GetHash().begin(); h != object.GetHash().at("Links").GetHash().end(); ++h)
+                        {
+                            if (h->first.find("Rail") != std::string::npos) continue; // Skip Rails until I add support for them
                             for (auto le = h->second.GetArray().begin(); le != h->second.GetArray().end(); ++le)
                                 o.Links[h->first].push_back(parse(le->GetHash()));
+                        }
                         try
                         {
                             o.ModelName = object.GetHash().at("ModelName").GetString();
                         } catch(std::bad_variant_access& e) {o.ModelName = std::string();}
 
-                        o.PlacementFileName = object.GetHash().at("PlacementFileName").GetString();
+                        try
+                        {
+                            o.PlacementFileName = object.GetHash().at("PlacementFileName").GetString();
+                        } catch(std::out_of_range& e) {o.PlacementFileName = std::string();}
                     
                         o.Rotate.x = object.GetHash().at("Rotate").GetHash().at("X").GetFloat();
                         o.Rotate.y = object.GetHash().at("Rotate").GetHash().at("Y").GetFloat();
