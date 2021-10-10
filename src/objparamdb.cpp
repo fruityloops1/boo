@@ -48,30 +48,41 @@ namespace boo
 
             if (!loaded) continue;
 
-            u32 i = 0;
-            try {
-            for (auto entry = stagedata.GetArray().begin(); entry != stagedata.GetArray().end(); ++entry)
+            try
+            {
+            for (u32 i = 0; i < stagedata.GetArray().size(); i++)
             {
                 for (auto object_list = stagedata.GetArray()[i].GetHash().cbegin(); object_list != stagedata.GetArray()[i].GetHash().cend(); ++object_list)
                 {
-                    for (auto object = object_list->second.GetArray().cbegin(); object != object_list->second.GetArray().cend(); ++object)
+                    for (oead::Byml object : object_list->second.GetArray())
                     {
-                        for (auto param = object->GetHash().cbegin(); param != object->GetHash().cend(); ++param)
-                        {
-                            if (param->first != "Id" && param->first != "IsLinkDest" && param->first != "LayerConfigName"
-                             && param->first != "ModelName" && param->first != "PlacementFileName" && param->first != "Rotate"
-                             && param->first != "Scale" && param->first != "Translate" && param->first != "UnitConfig"
-                             && param->first != "UnitConfigName" && param->first != "comment" && param->first != "Links")
+                        std::function<void(oead::Byml)> rl;
+                        rl = [&rl, this](oead::Byml object) {
+                            for (auto param = object.GetHash().cbegin(); param != object.GetHash().cend(); ++param)
                             {
-                                opd[object->GetHash().at("UnitConfig").GetHash().at("ParameterConfigName").GetString()][param->first] = param->second.GetType();
+                                if (param->first != "Id" && param->first != "IsLinkDest" && param->first != "LayerConfigName"
+                                 && param->first != "ModelName" && param->first != "PlacementFileName" && param->first != "Rotate"
+                                 && param->first != "Scale" && param->first != "Translate" && param->first != "UnitConfig"
+                                 && param->first != "UnitConfigName" && param->first != "comment" && param->first != "Links")
+                                {
+                                    opd[object.GetHash().at("UnitConfig").GetHash().at("ParameterConfigName").GetString()][param->first] = param->second.GetType();
+                                }
                             }
-                        }
+                            for (auto h = object.GetHash().at("Links").GetHash().begin(); h != object.GetHash().at("Links").GetHash().end(); ++h)
+                            {
+                                for (oead::Byml le : h->second.GetArray())
+                                {
+                                    rl(le);
+                                }
+                                
+                            }
+                        };
+                        rl(object);
                     }
                 }
             }
-            }catch(...) {}
+            } catch (std::bad_variant_access& e) {} // Unknown error, doesn't lose any entries since it only happens after the last loop ends
         }
-        
     }
 
     std::map<oead::Byml::Type, std::string> boo::ObjectParameterDatabase::types_ts;
