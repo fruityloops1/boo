@@ -5,6 +5,7 @@
 #include <oead/types.h>
 #include <oead/util/swap.h>
 #include <oead/yaz0.h>
+#include <stdexcept>
 
 namespace boo
 {
@@ -134,6 +135,12 @@ namespace boo
                         o.Scale.y = object.GetHash().at("Scale").GetHash().at("Y").GetFloat();
                         o.Scale.z = object.GetHash().at("Scale").GetHash().at("Z").GetFloat();
 
+                        try
+                        {
+                            for (oead::Byml sulle : object.GetHash().at("SrcUnitLayerList").GetArray())
+                                o.SrcUnitLayerList.push_back(std::pair<std::string, std::string>(sulle.GetHash().at("LayerName").GetString(), sulle.GetHash().at("LinkName").GetString()));
+                        } catch(std::out_of_range& e) {}
+
                         o.Translate.x = object.GetHash().at("Translate").GetHash().at("X").GetFloat();
                         o.Translate.y = object.GetHash().at("Translate").GetHash().at("Y").GetFloat();
                         o.Translate.z = object.GetHash().at("Translate").GetHash().at("Z").GetFloat();
@@ -232,6 +239,18 @@ namespace boo
                         b.GetHash()["Scale"].GetHash()["X"] = oead::Number<float>(object.Scale.x);
                         b.GetHash()["Scale"].GetHash()["Y"] = oead::Number<float>(object.Scale.y);
                         b.GetHash()["Scale"].GetHash()["Z"] = oead::Number<float>(object.Scale.z);
+
+                        if (object.SrcUnitLayerList.size() > 0)
+                        {
+                            b.GetHash()["SrcUnitLayerList"] = std::vector<oead::Byml>();
+                            for (std::pair<std::string, std::string> sull : object.SrcUnitLayerList)
+                            {
+                                oead::Byml bsull = absl::btree_map<std::string, oead::Byml>();
+                                bsull.GetHash()["LayerName"] = sull.first;
+                                bsull.GetHash()["LinkName"] = sull.second;
+                                b.GetHash()["SrcUnitLayerList"].GetArray().push_back(bsull);
+                            }
+                        }
 
                         b.GetHash()["Translate"] = absl::btree_map<std::string, oead::Byml>();
                         b.GetHash()["Translate"].GetHash()["X"] = oead::Number<float>(object.Translate.x);
