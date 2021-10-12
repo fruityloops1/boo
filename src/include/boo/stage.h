@@ -12,7 +12,7 @@ namespace boo
 
     enum StageType
     {
-        All, Design, Map, Sound, Other
+        All, Design, Map, Sound
     };
 
     struct UnitConfig
