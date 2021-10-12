@@ -1,11 +1,8 @@
-#include <algorithm>
 #include <boo/stage.h>
 #include <oead/byml.h>
 #include <oead/sarc.h>
 #include <oead/types.h>
-#include <oead/util/swap.h>
 #include <oead/yaz0.h>
-#include <stdexcept>
 
 namespace boo
 {

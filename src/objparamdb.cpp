@@ -19,10 +19,8 @@ namespace boo
 
             if (sarc.size() < 20) continue;
             if (sarc[0] == 'Y' && sarc[1] == 'a' && sarc[2] == 'z' && sarc[3] == '0')
-            {
                 sarc = oead::yaz0::Decompress(sarc);
-            }
-            if (!(sarc[0] == 'S' && sarc[1] == 'A' && sarc[2] == 'R' && sarc[3] == 'C')) continue;
+            if (!(sarc[0] == 'S' && sarc[1] == 'A' && sarc[2] == 'R' && sarc[3] == 'C')) continue; // Skip any non-SARC files
             oead::Sarc archive(sarc);
 
             oead::Byml stagedata;
@@ -87,6 +85,8 @@ namespace boo
 
     std::map<oead::Byml::Type, std::string> boo::ObjectParameterDatabase::types_ts;
     std::map<std::string, oead::Byml::Type> boo::ObjectParameterDatabase::types_st;
+
+    // Basic file format for saving the database
 
     u8 boo::ObjectParameterDatabase::Load(std::string filename)
     {
