@@ -96,11 +96,10 @@ namespace boo
 
     u8 boo::StageData::Load(oead::Byml& data)
     {
-        u32 i = 0;
-        for (auto entry = data.GetArray().cbegin(); entry != data.GetArray().cend(); ++entry)
+        for (u32 i = 0; i < data.GetArray().size(); i++)
         {
             entries.push_back(StageDataEntry());
-            for (auto object_list = data.GetArray()[i].GetHash().cbegin(); object_list != data.GetArray()[i].GetHash().cend(); ++object_list)
+            for (auto object_list = data.GetArray()[i].GetHash().begin(); object_list != data.GetArray()[i].GetHash().end(); ++object_list)
             {
                 for (oead::Byml object : object_list->second.GetArray())
                 {
@@ -113,9 +112,13 @@ namespace boo
                     
                         for (auto h = object.GetHash().at("Links").GetHash().begin(); h != object.GetHash().at("Links").GetHash().end(); ++h)
                         {
-                            if (h->first.find("Rail") != std::string::npos) continue; // Skip Rails until I add support for them
-                            for (auto le = h->second.GetArray().begin(); le != h->second.GetArray().end(); ++le)
-                                o.Links[h->first].push_back(parse(le->GetHash()));
+                            for (auto le : h->second.GetArray())
+                            {
+                                try
+                                {
+                                    o.Links[h->first].push_back(parse(le.GetHash()));
+                                } catch(std::bad_variant_access& e) {} // Metro kingdom rails
+                            }
                         }
                         try
                         {
@@ -180,7 +183,7 @@ namespace boo
                         {
                             if (param->first != "Id" && param->first != "IsLinkDest" && param->first != "LayerConfigName"
                              && param->first != "ModelName" && param->first != "PlacementFileName" && param->first != "Rotate"
-                             && param->first != "Scale" && param->first != "Translate" && param->first != "UnitConfig"
+                             && param->first != "Scale" && param->first != "SrcUnitLayerList" && param->first != "Translate" && param->first != "UnitConfig"
                              && param->first != "UnitConfigName" && param->first != "comment" && param->first != "Links")
                             {
                                 o.extra_params[param->first] = param->second;
@@ -191,7 +194,6 @@ namespace boo
                     entries[i].object_lists[object_list->first].objects.push_back(parse(object));
                 }
             }
-            i++;
         }
         return 0;
     }
