@@ -12,7 +12,7 @@ namespace boo
 
     enum StageType
     {
-        All, Design, Map, Sound
+        All, Design, Map, Sound, Other
     };
 
     struct UnitConfig
@@ -33,6 +33,7 @@ namespace boo
         std::string ModelName;
         std::string PlacementFileName;
         oead::Vector3f Rotate, Scale, Translate;
+        std::vector<std::pair<std::string, std::string>> SrcUnitLayerList;
         UnitConfig UnitConfig;
         std::string UnitConfigName;
         std::string comment;
