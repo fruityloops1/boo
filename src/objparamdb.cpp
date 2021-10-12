@@ -62,7 +62,7 @@ namespace boo
                             {
                                 if (param->first != "Id" && param->first != "IsLinkDest" && param->first != "LayerConfigName"
                                  && param->first != "ModelName" && param->first != "PlacementFileName" && param->first != "Rotate"
-                                 && param->first != "Scale" && param->first != "Translate" && param->first != "UnitConfig"
+                                 && param->first != "Scale" && param->first != "SrcUnitLayerList" && param->first != "Translate" && param->first != "UnitConfig"
                                  && param->first != "UnitConfigName" && param->first != "comment" && param->first != "Links")
                                 {
                                     opd[object.GetHash().at("UnitConfig").GetHash().at("ParameterConfigName").GetString()][param->first] = param->second.GetType();
