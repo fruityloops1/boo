@@ -108,15 +108,8 @@ namespace boo
                         o.LayerConfigName = object.GetHash().at("LayerConfigName").GetString();
                     
                         for (auto h = object.GetHash().at("Links").GetHash().begin(); h != object.GetHash().at("Links").GetHash().end(); ++h)
-                        {
                             for (auto le : h->second.GetArray())
-                            {
-                                try
-                                {
-                                    o.Links[h->first].push_back(parse(le.GetHash()));
-                                } catch(std::bad_variant_access& e) {} // Metro kingdom rails
-                            }
-                        }
+                                o.Links[h->first].push_back(parse(le.GetHash()));
                         try
                         {
                             o.ModelName = object.GetHash().at("ModelName").GetString();
@@ -159,7 +152,10 @@ namespace boo
                         o.UnitConfig.DisplayTranslate.y = object.GetHash().at("UnitConfig").GetHash().at("DisplayTranslate").GetHash().at("Y").GetFloat();
                         o.UnitConfig.DisplayTranslate.z = object.GetHash().at("UnitConfig").GetHash().at("DisplayTranslate").GetHash().at("Z").GetFloat();
 
-                        o.UnitConfig.GenerateCategory = object.GetHash().at("UnitConfig").GetHash().at("GenerateCategory").GetString();
+                        try
+                        {
+                            o.UnitConfig.GenerateCategory = object.GetHash().at("UnitConfig").GetHash().at("GenerateCategory").GetString();
+                        } catch (std::bad_variant_access& e) {o.UnitConfig.GenerateCategory = std::string();} // Metro kingdom mechawiggler rails
                         o.UnitConfig.ParameterConfigName = object.GetHash().at("UnitConfig").GetHash().at("ParameterConfigName").GetString();
                     
                         std::string PlacementTargetFile = object.GetHash().at("UnitConfig").GetHash().at("PlacementTargetFile").GetString();
@@ -274,7 +270,10 @@ namespace boo
                         b.GetHash()["UnitConfig"].GetHash()["DisplayTranslate"].GetHash()["Y"] = oead::Number<float>(object.UnitConfig.DisplayTranslate.y);
                         b.GetHash()["UnitConfig"].GetHash()["DisplayTranslate"].GetHash()["Z"] = oead::Number<float>(object.UnitConfig.DisplayTranslate.z);
 
-                        b.GetHash()["UnitConfig"].GetHash()["GenerateCategory"] = object.UnitConfig.GenerateCategory;
+                        if (object.UnitConfig.GenerateCategory.empty())
+                            b.GetHash()["UnitConfig"].GetHash()["GenerateCategory"] = oead::Byml();
+                        else
+                            b.GetHash()["UnitConfig"].GetHash()["GenerateCategory"] = object.UnitConfig.GenerateCategory;
                         b.GetHash()["UnitConfig"].GetHash()["ParameterConfigName"] = object.UnitConfig.ParameterConfigName;
 
                         if (object.UnitConfig.PlacementTargetFile == boo::StageType::All)
