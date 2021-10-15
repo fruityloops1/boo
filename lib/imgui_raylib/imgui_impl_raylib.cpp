@@ -234,9 +234,11 @@ bool ImGui_ImplRaylib_ProcessEvent()
 
     FOR_ALL_KEYS(SET_KEY_DOWN);
 
-    if (GetKeyPressed() != -1)
+    char g = GetCharPressed();
+
+    if (g != 0)
     {
-        io.AddInputCharacter(GetKeyPressed());
+        io.AddInputCharacter(g);
     }
 
     return true;
