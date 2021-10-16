@@ -16,6 +16,8 @@ struct Config
 
     std::string StageDataPath;
     std::string ObjectDataPath;
+    u8 language = 0;
+    int fontsize = 16;
 };
 
 };
