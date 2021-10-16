@@ -81,6 +81,7 @@ namespace boo
             }
             } catch (std::bad_variant_access& e) {} // Unknown error, doesn't lose any entries since it only happens after the last loop ends
         }
+        loaded = true;
     }
 
     std::map<oead::Byml::Type, std::string> boo::ObjectParameterDatabase::types_ts;
@@ -105,6 +106,7 @@ namespace boo
             } catch(std::out_of_range& e) {opd_file.close(); return 1;}
         }
         opd_file.close();
+        loaded = true;
         return 0;
     }
 
@@ -152,6 +154,12 @@ namespace boo
         types_st["long"] = oead::Byml::Type::Int64;
         types_st["ulong"] = oead::Byml::Type::UInt64;
         types_st["double"] = oead::Byml::Type::Double;
+    }
+
+    ObjectParameterDatabase& boo::ObjectParameterDatabase::Get()
+    {
+        static ObjectParameterDatabase opdb;
+        return opdb;
     }
 
 }

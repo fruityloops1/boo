@@ -15,7 +15,10 @@ public:
     u8 Load(std::string filename);
     u8 Save(std::string filename);
 
+    bool loaded = false;
+
     ObjectParameterDatabase();
+    static ObjectParameterDatabase& Get();
 
     static std::map<oead::Byml::Type, std::string> types_ts;
     static std::map<std::string, oead::Byml::Type> types_st;
