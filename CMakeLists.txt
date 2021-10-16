@@ -27,7 +27,9 @@ include_directories(lib/imgui_raylib)
 include_directories(lib/imgui)
 include_directories(lib/imgui/backends)
 
-add_executable(boo src/boo.cpp src/config.cpp src/objparamdb.cpp src/stage.cpp src/include/boo/config.h src/include/boo/objparamdb.h src/include/boo/stage.h)
+add_executable(boo src/boo.cpp src/config.cpp src/objparamdb.cpp src/stage.cpp src/ui.cpp src/include/boo/config.h src/include/boo/localization.h src/include/boo/objparamdb.h src/include/boo/stage.h src/include/boo/ui.h)
 target_link_libraries(boo PUBLIC oead)
 target_link_libraries(boo PUBLIC raylib)
 target_link_libraries(boo PUBLIC imgui)
+
+file(COPY res DESTINATION .)
