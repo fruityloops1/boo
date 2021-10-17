@@ -11,6 +11,8 @@
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_raylib.h>
 
+#include <nfd.hpp>
+
 #define DEFAULT_WINDOW_WIDTH 1280
 #define DEFAULT_WINDOW_HEIGHT 720
 
@@ -24,13 +26,13 @@ int resources()
 	ImGuiIO& io = ImGui::GetIO();
 	if (std::filesystem::exists(DEFAULT_FONT))
 	{
-    	io.Fonts->AddFontFromFileTTF(DEFAULT_FONT, 16, NULL, io.Fonts->GetGlyphRangesJapanese());
+    	io.Fonts->AddFontFromFileTTF(DEFAULT_FONT, boo::Config::Get().fontsize, NULL, io.Fonts->GetGlyphRangesJapanese());
 		done--;
 	}
 	return done;
 }
 
-void run(bool StageDataSet, bool ObjectDataSet)
+void run(bool StageDataSet)
 {
 	SetTraceLogLevel(25);
 	InitWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, boo::Localization::GetLocalized("title").c_str());
@@ -56,6 +58,8 @@ void run(bool StageDataSet, bool ObjectDataSet)
 		BeginDrawing();
 
         ClearBackground(BLACK);
+
+		if (!StageDataSet) StageDataSet = ui.ShowStageDataFileSelectPopup();
         
         ui.ShowMainMenuBar();
 		ui.ShowDebug();
@@ -70,7 +74,7 @@ void run(bool StageDataSet, bool ObjectDataSet)
 int main()
 {
 	std::cout << "Loading configuration\n";
-	boo::Config c;
+	boo::Config& c = boo::Config::Get();
 	if (c.Load("boo.ini"))
 	{
 		std::cout << "No configuration found. Creating...\n";
@@ -81,7 +85,8 @@ int main()
 
 	boo::ObjectParameterDatabase& opdb = boo::ObjectParameterDatabase::Get();
 	if (std::filesystem::exists("db.opdb")) opdb.Load("db.opdb");
-
-	run(!c.StageDataPath.empty(), !c.ObjectDataPath.empty());
+	
+	NFD_Init();
+	run(!c.StageDataPath.empty());
 	return 0;
 }
