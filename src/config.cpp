@@ -37,4 +37,10 @@ namespace boo
         return 0;
     }
 
+    Config& boo::Config::Get()
+    {
+        static Config config;
+        return config;
+    }
+
 }
