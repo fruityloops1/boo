@@ -3,6 +3,7 @@ project(boo)
 
 add_subdirectory(lib/oead)
 add_subdirectory(lib/raylib)
+add_subdirectory(lib/nativefiledialog-extended)
 
 add_library(imgui STATIC
     lib/imgui/imgui.cpp
@@ -26,10 +27,12 @@ include_directories(lib/raylib/src)
 include_directories(lib/imgui_raylib)
 include_directories(lib/imgui)
 include_directories(lib/imgui/backends)
+include_directories(lib/nativefiledialog-extended/src/include)
 
 add_executable(boo src/boo.cpp src/config.cpp src/objparamdb.cpp src/stage.cpp src/ui.cpp src/include/boo/config.h src/include/boo/localization.h src/include/boo/objparamdb.h src/include/boo/stage.h src/include/boo/ui.h)
 target_link_libraries(boo PUBLIC oead)
 target_link_libraries(boo PUBLIC raylib)
 target_link_libraries(boo PUBLIC imgui)
+target_link_libraries(boo PRIVATE nfd)
 
 file(COPY res DESTINATION .)
