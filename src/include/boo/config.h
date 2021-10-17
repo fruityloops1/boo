@@ -9,8 +9,9 @@
 namespace boo
 {
 
-struct Config
+class Config
 {
+public:
     u8 Load(std::string file);
     u8 Save(std::string file);
 
@@ -18,6 +19,8 @@ struct Config
     std::string ObjectDataPath;
     u8 language = 0;
     int fontsize = 16;
+
+    static Config& Get();
 };
 
 };
