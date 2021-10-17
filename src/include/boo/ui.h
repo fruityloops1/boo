@@ -11,10 +11,13 @@ class UIContainer
 
 private:
     bool DebugOpen = false;
+    bool ObjectViewOpen = false;
 
 public:
     void ShowDebug();
     void ShowMainMenuBar();
+    void ShowObjectView(boo::StageData& sd, int scenario);
+    bool ShowStageDataFileSelectPopup();
 };
 
 }
