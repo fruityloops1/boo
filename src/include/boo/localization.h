@@ -22,7 +22,7 @@ private:
             {"generate_notice", "In order to use Boo Editor, you need an Object Parameter Database. You can generate it using the StageData folder."},
             {"generating", "Generating Object Parameter Database..."}, {"generating_info", "This could take a bit of time."},
             {"save", "Save"}, {"language", "Language"}, {"fontsize", "GUI Scale"}, {"restart_changes", "Restart Boo Editor for the changes to take effect."},
-            {"file", "File"}, {"exit", "Exit"}
+            {"file", "File"}, {"exit", "Exit"}, {"save_shortcut", "CTRL Q"}
         },
         { // German
             {"title", "Boo Editor"}, {"debug", "Debug"}, {"view", "Ansicht"}, {"object_view", "Objektansicht"},
@@ -33,7 +33,7 @@ private:
             {"generate_notice", "Um Boo Editor zu nutzen, benötigst du eine Objektparameterdatenbank. Diese kann durch dem StageData Ordner generiert werden."},
             {"generating", "Generiere Objektparameterdatenbank..."}, {"generating_info", "Dies könnte etwas dauern."},
             {"save", "Speichern"}, {"language", "Sprache"}, {"fontsize", "GUI-Skalierung"}, {"restart_changes", "Starte Boo Editor neu um die Änderungen wirksam zu machen."},
-            {"file", "Datei"}, {"exit", "Schließen"}
+            {"file", "Datei"}, {"exit", "Schließen"}, {"save_shortcut", "STRG-Q"}
         }
     };
     static inline u8 language;

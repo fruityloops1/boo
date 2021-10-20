@@ -34,7 +34,7 @@ namespace boo::ui
 
             if (ImGui::BeginMenu(boo::Localization::GetLocalized("file").c_str()))
             {
-                if (ImGui::MenuItem(boo::Localization::GetLocalized("exit").c_str())) {TryExit();}
+                if (ImGui::MenuItem(boo::Localization::GetLocalized("exit").c_str(), boo::Localization::GetLocalized("save_shortcut").c_str())) {TryExit();}
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu(boo::Localization::GetLocalized("view").c_str()))
