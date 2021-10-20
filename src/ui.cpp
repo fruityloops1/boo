@@ -1,10 +1,13 @@
 #include <boo/config.h>
 #include <boo/localization.h>
+#include <boo/objparamdb.h>
 #include <boo/ui.h>
+
 #include <filesystem>
 #include <imgui.h>
-#include <raylib.h>
 #include <nfd.hpp>
+#include <raylib.h>
+#include <thread>
 
 namespace boo::ui
 {
@@ -57,12 +60,22 @@ namespace boo::ui
 
     bool boo::ui::UIContainer::ShowStageDataFileSelectPopup()
     {
+        ImGuiIO& io = ImGui::GetIO();
+        static bool scale_pos = true;
+        if (scale_pos)
+        {
+            boo::Config& c = boo::Config::Get();
+            ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x * 0.36f * ((float) c.Get().fontsize / 16), io.DisplaySize.y * 0.15f * ((float) c.Get().fontsize / 16)));
+            ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f), ImGuiCond_Always, ImVec2(0.5f,0.5f));
+            scale_pos = false;
+        }
         ImGui::OpenPopup(boo::Localization::GetLocalized("select_stage_data").c_str());
         if (ImGui::BeginPopupModal(boo::Localization::GetLocalized("select_stage_data").c_str()))
         {
             static char temp_path[255];
             static bool exists = false;
-            ImGui::Text("%s", boo::Localization::GetLocalized("stage_data_notice").c_str());
+            ImGui::TextWrapped("%s", boo::Localization::GetLocalized("stage_data_notice").c_str());
+            ImGui::Spacing();
             if (ImGui::Button(boo::Localization::GetLocalized("browse").c_str()))
             {
                 nfdchar_t *sdPath;
@@ -92,5 +105,59 @@ namespace boo::ui
             ImGui::EndPopup();
         }
         return false;
+    }
+
+    void boo::ui::UIContainer::ShowOPDBGeneratePopup()
+    {
+        ImGuiIO& io = ImGui::GetIO();
+        static bool scale_pos = true;
+        static bool running = false;
+        if (scale_pos)
+        {
+            boo::Config& c = boo::Config::Get();
+            ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x * 0.36f * ((float) c.Get().fontsize / 16), io.DisplaySize.y * 0.15f * ((float) c.Get().fontsize / 16)));
+            ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f), ImGuiCond_Always, ImVec2(0.5f,0.5f));
+            scale_pos = false;
+        }
+        ImGui::OpenPopup(boo::Localization::GetLocalized("generate_opdb").c_str());
+        if (ImGui::BeginPopupModal(boo::Localization::GetLocalized("generate_opdb").c_str()))
+        {
+            if (!running)
+            {
+                ImGui::TextWrapped("%s", boo::Localization::GetLocalized("generate_notice").c_str());
+                ImGui::Spacing();
+                if (ImGui::Button(boo::Localization::GetLocalized("generate").c_str()))
+                {
+                    running = true;
+                }
+            }
+            else
+            {
+                static std::string done_file_name;
+                auto thread = []()
+                {
+                    boo::ObjectParameterDatabase& opdb = boo::ObjectParameterDatabase::Get();
+                    for (const auto& sf : std::filesystem::directory_iterator(boo::Config::Get().StageDataPath))
+                    {
+                        if (sf.is_directory()) continue;
+                        opdb.GenerateFromFile(sf.path(), done_file_name);
+                    }
+                    opdb.loaded = true;
+                    opdb.Save("db.opdb");
+                };
+                static bool thread_started = false;
+                if (!thread_started)
+                {
+                    static std::thread generator(thread);
+                    generator.detach();
+                    thread_started = true;
+                }
+                ImGui::Text("%s", boo::Localization::GetLocalized("generating").c_str());
+                ImGui::Text("%s", boo::Localization::GetLocalized("generating_info").c_str());
+                ImGui::Spacing();
+                ImGui::Text("%s", done_file_name.c_str());
+            }
+            ImGui::EndPopup();
+        }
     }
 }

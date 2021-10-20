@@ -60,6 +60,7 @@ void run(bool StageDataSet)
         ClearBackground(BLACK);
 
 		if (!StageDataSet) StageDataSet = ui.ShowStageDataFileSelectPopup();
+		else if (!boo::ObjectParameterDatabase::Get().loaded) {ui.ShowOPDBGeneratePopup();}
         
         ui.ShowMainMenuBar();
 		ui.ShowDebug();

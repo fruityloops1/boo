@@ -18,6 +18,7 @@ public:
     void ShowMainMenuBar();
     void ShowObjectView(boo::StageData& sd, int scenario);
     bool ShowStageDataFileSelectPopup();
+    void ShowOPDBGeneratePopup();
 };
 
 }
