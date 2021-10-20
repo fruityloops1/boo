@@ -48,7 +48,7 @@ void run(bool StageDataSet)
 
 	resources();
 
-	while (!WindowShouldClose())
+	while (!WindowShouldClose() && !ui.IsExit())
 	{
 		ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplRaylib_NewFrame();
@@ -64,6 +64,7 @@ void run(bool StageDataSet)
         
         ui.ShowMainMenuBar();
 		ui.ShowDebug();
+		ui.ShowPreferences();
         
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

@@ -11,9 +11,14 @@
 
 namespace boo::ui
 {
+    bool boo::ui::UIContainer::IsExit()
+    {
+        return Exit;
+    }
+    
     void boo::ui::UIContainer::ShowDebug()
     {
-        if (DebugOpen && ImGui::Begin(boo::Localization::GetLocalized("debug").c_str()))
+        if (DebugOpen && ImGui::Begin(boo::Localization::GetLocalized("debug").c_str(), NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
             std::string fps = std::to_string(GetFPS());
             fps.append(" FPS");
@@ -26,10 +31,17 @@ namespace boo::ui
     {
         if (ImGui::BeginMainMenuBar())
         {
+
+            if (ImGui::BeginMenu(boo::Localization::GetLocalized("file").c_str()))
+            {
+                if (ImGui::MenuItem(boo::Localization::GetLocalized("exit").c_str())) {TryExit();}
+                ImGui::EndMenu();
+            }
             if (ImGui::BeginMenu(boo::Localization::GetLocalized("view").c_str()))
             {
                 if (ImGui::MenuItem(boo::Localization::GetLocalized("s_debug").c_str(), "", &DebugOpen)) {}
                 if (ImGui::MenuItem(boo::Localization::GetLocalized("s_object_view").c_str(), "", &ObjectViewOpen)) {}
+                if (ImGui::MenuItem(boo::Localization::GetLocalized("s_preferences").c_str(), "", &PreferencesOpen)) {}
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();
@@ -54,6 +66,117 @@ namespace boo::ui
                     ImGui::TreePop();
                 }
             }
+            ImGui::End();
+        }
+    }
+
+    void boo::ui::UIContainer::ShowPreferences()
+    {
+        if (PreferencesOpen && ImGui::Begin(boo::Localization::GetLocalized("s_preferences").c_str(), NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+
+            boo::Config& config = boo::Config::Get();
+
+            static char stagedata_path[255]; static bool stagedata_exists = false; static bool sds = false;
+            static char objectdata_path[255]; static bool objectdata_exists = false; static bool ods = false;
+            static bool restart_changes = false;
+            if (!sds)
+            {
+                std::copy(config.StageDataPath.begin(), config.StageDataPath.end(), stagedata_path);
+                stagedata_exists = std::filesystem::exists(stagedata_path);
+                sds = true;
+            }
+            if (!ods)
+            {
+                std::copy(config.ObjectDataPath.begin(), config.ObjectDataPath.end(), objectdata_path);
+                objectdata_exists = std::filesystem::exists(objectdata_path);
+                ods = true;
+            }
+
+            static bool changed = false;
+
+            if (ImGui::InputText(boo::Localization::GetLocalized("stage_data_folder").c_str(), stagedata_path, IM_ARRAYSIZE(stagedata_path)))
+            {
+                stagedata_exists = std::filesystem::exists(stagedata_path);
+                changed = true;
+                restart_changes = true;
+            }
+            ImGui::PushID("stagebrowse");
+            ImGui::SameLine();
+            if (ImGui::Button(boo::Localization::GetLocalized("browse").c_str()))
+            {
+                nfdchar_t *sdPath;
+                nfdresult_t result = NFD::PickFolder(sdPath, ".");
+                if (result == NFD_OKAY)
+                {
+                    std::string sdp(sdPath);
+                    std::fill(stagedata_path, stagedata_path + 255, 0);
+                    std::copy(sdp.begin(), sdp.end(), stagedata_path);
+                    NFD::FreePath(sdPath);
+                    stagedata_exists = std::filesystem::exists(stagedata_path);
+                    changed = true;
+                    restart_changes = true;
+                }
+            }
+            ImGui::PopID();
+            if (!stagedata_exists)
+                ImGui::TextColored(ImVec4{255, 0, 0, 255}, "%s", boo::Localization::GetLocalized("not_exist").c_str());
+            
+            if (ImGui::InputText(boo::Localization::GetLocalized("object_data_folder").c_str(), objectdata_path, IM_ARRAYSIZE(objectdata_path)))
+            {
+                objectdata_exists = std::filesystem::exists(objectdata_path);
+                changed = true;
+                restart_changes = true;
+            }
+            ImGui::PushID("objectbrowse");
+            ImGui::SameLine();
+            if (ImGui::Button(boo::Localization::GetLocalized("browse").c_str()))
+            {
+                nfdchar_t *odPath;
+                nfdresult_t result = NFD::PickFolder(odPath, ".");
+                if (result == NFD_OKAY)
+                {
+                    std::string odp(odPath);
+                    std::fill(objectdata_path, objectdata_path + 255, 0);
+                    std::copy(odp.begin(), odp.end(), objectdata_path);
+                    NFD::FreePath(odPath);
+                    objectdata_exists = std::filesystem::exists(objectdata_path);
+                    changed = true;
+                    restart_changes = true;
+                }
+            }
+            ImGui::PopID();
+            /*if (!objectdata_exists)
+                ImGui::TextColored(ImVec4{255, 0, 0, 255}, "%s", boo::Localization::GetLocalized("not_exist").c_str());*/
+            
+            static int lang_current = config.language;
+            static const char* langs[] = {"English", "German"};
+            if (ImGui::Combo(boo::Localization::GetLocalized("language").c_str(), &lang_current, langs, IM_ARRAYSIZE(langs)))
+            {
+                config.language = lang_current;
+                boo::Localization::SetLanguage((u8) lang_current);
+                changed = true;
+            }
+
+            static int fontsize = config.fontsize;
+            
+            if (ImGui::SliderInt(boo::Localization::GetLocalized("fontsize").c_str(), &fontsize, 8, 56))
+            {
+                changed = true;
+                restart_changes = true;
+            }
+            
+            if (changed && stagedata_exists && ImGui::Button(boo::Localization::GetLocalized("save").c_str()))
+            {
+                config.fontsize = fontsize;
+                config.language = (u8) lang_current;
+                config.StageDataPath = std::string(stagedata_path);
+                config.ObjectDataPath = std::string(objectdata_path);
+                config.Save("boo.ini");
+                changed = false;
+            }
+
+            if (restart_changes) ImGui::TextColored(ImVec4{255, 0, 0, 255}, "%s", boo::Localization::GetLocalized("restart_changes").c_str());
             ImGui::End();
         }
     }
@@ -91,9 +214,7 @@ namespace boo::ui
             }
             ImGui::SameLine();
             if (ImGui::InputText(boo::Localization::GetLocalized("stage_data_folder").c_str(), temp_path, IM_ARRAYSIZE(temp_path)))
-            {
                 exists = std::filesystem::exists(temp_path);
-            }
             if (!exists)
                 ImGui::TextColored(ImVec4{255, 0, 0, 255}, "%s", boo::Localization::GetLocalized("not_exist").c_str());
             else if (ImGui::Button(boo::Localization::GetLocalized("ok").c_str()))
@@ -159,5 +280,10 @@ namespace boo::ui
             }
             ImGui::EndPopup();
         }
+    }
+
+    void boo::ui::UIContainer::TryExit()
+    {
+        Exit = true;
     }
 }
