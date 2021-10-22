@@ -128,10 +128,10 @@ void run(bool StageDataSet)
 
 	resources();
 
-	while (!WindowShouldClose() && !ui.IsExit())
+	while (!ui.IsExit())
 	{
-
 		if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_Q)) ui.TryExit();
+		if (WindowShouldClose()) ui.TryExit();
 
 		ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplRaylib_NewFrame();
