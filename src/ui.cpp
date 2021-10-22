@@ -155,6 +155,7 @@ namespace boo::ui
             {
                 config.language = lang_current;
                 boo::Localization::SetLanguage((u8) lang_current);
+                SetWindowTitle(boo::Localization::GetLocalized("title").c_str());
                 changed = true;
             }
 
