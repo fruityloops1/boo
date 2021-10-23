@@ -177,6 +177,6 @@ int main()
 	if (std::filesystem::exists("db.opdb")) opdb.Load("db.opdb");
 	
 	NFD_Init();
-	run(!c.StageDataPath.empty());
+	run(std::filesystem::exists(c.StageDataPath));
 	return 0;
 }
