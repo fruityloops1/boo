@@ -1,5 +1,6 @@
 #include <boo/config.h>
 #include <boo/objparamdb.h>
+#include <cstdlib>
 #include <exception>
 #include <filesystem>
 #include <fstream>
@@ -8,7 +9,7 @@
 #include <oead/yaz0.h>
 #include <string>
 #include <thread>
-#include <iostream>
+
 namespace boo
 {
 
@@ -36,7 +37,7 @@ namespace boo
 
         for (oead::Sarc::File file : archive.GetFiles())
         {
-            if (file.name.ends_with("Design.byml") || file.name.ends_with("Map.byml") || file.name.ends_with("Sound.byml"))
+            if ((file.name.ends_with("Design.byml") || file.name.ends_with("Map.byml") || file.name.ends_with("Sound.byml")) && file.name != "LightMap.byml")
             {
                 std::string temp(file.name);
                 if (file.name.ends_with("Design.byml")) temp = temp.substr(0, temp.size() - 11);
@@ -44,7 +45,8 @@ namespace boo
                 else if (file.name.ends_with("Sound.byml")) temp = temp.substr(0, temp.size() - 10);
                 Name = std::string(temp);
 
-                stagedata.FromBinary(file.data);
+                stagedata = oead::Byml::FromBinary(file.data);
+                if (stagedata.GetType() == oead::Byml::Type::Null) return Name;
                 loaded = true;
                 break;
             }
@@ -52,10 +54,11 @@ namespace boo
 
         if (!loaded) return "";
 
-        try
-        {
+        int b = -1;
+
         for (u32 i = 0; i < stagedata.GetArray().size(); i++)
         {
+            b = i;
             for (auto object_list = stagedata.GetArray()[i].GetHash().cbegin(); object_list != stagedata.GetArray()[i].GetHash().cend(); ++object_list)
             {
                 for (oead::Byml object : object_list->second.GetArray())
@@ -85,7 +88,6 @@ namespace boo
                 }
             }
         }
-        } catch (std::bad_variant_access& e) {} // Unknown error, doesn't lose any entries since it only happens after the last loop ends
         return Name;
     }
 
