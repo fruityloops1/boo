@@ -1,4 +1,5 @@
 #include <boo/config.h>
+#include <boo/editor.h>
 #include <boo/localization.h>
 #include <boo/objparamdb.h>
 #include <boo/ui.h>
@@ -146,13 +147,17 @@ void run(bool StageDataSet)
 		else if (!boo::ObjectParameterDatabase::Get().loaded) {ui.ShowOPDBGeneratePopup();}
         
         ui.ShowMainMenuBar();
+		ui.ShowStages();
 		ui.ShowDebug();
+		ui.ShowObjectView();
 		ui.ShowPreferences();
         
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         EndDrawing();
+
+		if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_O)) ui.StageFileOpen();
 	}
 }
 

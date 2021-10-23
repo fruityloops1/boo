@@ -1,9 +1,12 @@
+#include "boo/stage.h"
+#include "nfd.h"
 #include <boo/config.h>
 #include <boo/localization.h>
 #include <boo/objparamdb.h>
 #include <boo/ui.h>
 
 #include <filesystem>
+#include <fstream>
 #include <imgui.h>
 #include <nfd.hpp>
 #include <raylib.h>
@@ -11,6 +14,26 @@
 
 namespace boo::ui
 {
+
+    int boo::ui::UIContainer::GetEditorSelected() {return EditorSelected;}
+
+    void boo::ui::UIContainer::StageFileOpen()
+    {
+        nfdchar_t *stagePath;
+        nfdfilteritem_t filter[2] = {{"SZS", "szs"}, {"SARC", "sarc"}};
+        nfdresult_t result = NFD::OpenDialog(stagePath, filter, 2, boo::Config::Get().StageDataPath.c_str());
+        if (result == NFD_OKAY)
+        {
+            std::string sdp(stagePath);
+            editors.push_back(boo::Editor());
+            boo::Editor& neditor = editors[editors.size() - 1];
+            
+            neditor.LoadStage(sdp);
+
+            NFD::FreePath(stagePath);
+        }
+    }
+
     bool boo::ui::UIContainer::IsExit()
     {
         return Exit;
@@ -27,6 +50,41 @@ namespace boo::ui
         }
     }
 
+    void boo::ui::UIContainer::ShowStages()
+    {
+        if (ImGui::Begin(boo::Localization::GetLocalized("stages").c_str()))
+        {
+            if (editors.size() == 0)
+            {
+
+            }
+            else
+            {
+                ImGui::BeginTabBar("#stages");
+                int sel = 0;
+                for (boo::Editor& editor : editors)
+                {
+                    ImGui::PushID(editor.stage.Name.c_str());
+                    if (ImGui::BeginTabItem(editor.stage.Name.c_str()))
+                    {
+                        static int scenario = 0;  
+                        ImGui::SliderInt(boo::Localization::GetLocalized("scenario").c_str(), &scenario, 0, 14);
+                        if (scenario > editor.stage.data.entries.size() - 1) scenario = editor.stage.data.entries.size() - 1;
+                        if (scenario < 0) scenario = 0;
+                        editor.CurrentScenario = (u8) scenario;
+                        ImGui::EndTabItem();
+                        EditorSelected = sel;
+                    }
+                    ImGui::PopID();
+                    sel++;
+                }
+                ImGui::EndTabBar();
+            }
+            ImGui::End();
+        }
+        
+    }
+
     void boo::ui::UIContainer::ShowMainMenuBar()
     {
         if (ImGui::BeginMainMenuBar())
@@ -34,6 +92,7 @@ namespace boo::ui
 
             if (ImGui::BeginMenu(boo::Localization::GetLocalized("file").c_str()))
             {
+                if (ImGui::MenuItem(boo::Localization::GetLocalized("open").c_str(), boo::Localization::GetLocalized("open_shortcut").c_str())) {StageFileOpen();}
                 if (ImGui::MenuItem(boo::Localization::GetLocalized("exit").c_str(), boo::Localization::GetLocalized("save_shortcut").c_str())) {TryExit();}
                 ImGui::EndMenu();
             }
@@ -48,17 +107,18 @@ namespace boo::ui
         }
     }
 
-    void boo::ui::UIContainer::ShowObjectView(boo::StageData& sd, int scenario)
+    void boo::ui::UIContainer::ShowObjectView()
     {
-        if (ObjectViewOpen && ImGui::Begin(boo::Localization::GetLocalized("object_view").c_str()))
+        if (ObjectViewOpen && editors.size() > 0 && ImGui::Begin(boo::Localization::GetLocalized("object_view").c_str()))
         {
-            for (auto ol = sd.entries[scenario].object_lists.begin(); ol != sd.entries[scenario].object_lists.end(); ++ol)
+            boo::StageData& sd = editors[EditorSelected].stage.data;
+            for (auto ol = sd.entries[editors[EditorSelected].CurrentScenario].object_lists.begin(); ol != sd.entries[editors[EditorSelected].CurrentScenario].object_lists.end(); ++ol)
             {
                 if (ImGui::TreeNode(ol->first.c_str()))
                 {
                     for (boo::Object object : ol->second.objects)
                     {
-                        if (ImGui::Selectable(object.UnitConfig.ParameterConfigName.c_str(), false))
+                        if (ImGui::Selectable(object.UnitConfig.ParameterConfigName.c_str(), true))
                         {
 
                         }

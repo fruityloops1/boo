@@ -22,7 +22,8 @@ private:
             {"generate_notice", "In order to use Boo Editor, you need an Object Parameter Database. You can generate it using the StageData folder."},
             {"generating", "Generating Object Parameter Database..."}, {"generating_info", "This could take a bit of time."},
             {"save", "Save"}, {"language", "Language"}, {"fontsize", "GUI Scale"}, {"restart_changes", "Restart Boo Editor for the changes to take effect."},
-            {"file", "File"}, {"exit", "Exit"}, {"save_shortcut", "CTRL Q"}
+            {"file", "File"}, {"exit", "Exit"}, {"save_shortcut", "CTRL Q"}, {"stages", "Stages"}, {"open", "Open"}, {"open_shortcut", "CTRL O"},
+            {"t_sarc", "SARC archive"}, {"t_szs", "Yaz0-compressed SARC archive"}, {"scenario", "Scenario"}
         },
         { // German
             {"title", "Boo Editor"}, {"debug", "Debug"}, {"view", "Ansicht"}, {"object_view", "Objektansicht"},
@@ -33,7 +34,8 @@ private:
             {"generate_notice", "Um Boo Editor zu nutzen, benötigst du eine Objektparameterdatenbank. Diese kann durch dem StageData Ordner generiert werden."},
             {"generating", "Generiere Objektparameterdatenbank..."}, {"generating_info", "Dies könnte etwas dauern."},
             {"save", "Speichern"}, {"language", "Sprache"}, {"fontsize", "GUI-Skalierung"}, {"restart_changes", "Starte Boo Editor neu um die Änderungen wirksam zu machen."},
-            {"file", "Datei"}, {"exit", "Schließen"}, {"save_shortcut", "STRG-Q"}
+            {"file", "Datei"}, {"exit", "Schließen"}, {"save_shortcut", "STRG-Q"}, {"stages", "Level"}, {"open", "Öffnen"}, {"open_shortcut", "STRG-O"},
+            {"t_sarc", "SARC-Archiv"}, {"t_szs", "Yaz0-komprimiertes SARC-Archiv"}, {"scenario", "Szenario"}
         }
     };
     static inline u8 language;
