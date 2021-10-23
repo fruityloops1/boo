@@ -118,7 +118,7 @@ namespace boo::ui
                 {
                     for (boo::Object object : ol->second.objects)
                     {
-                        if (ImGui::Selectable(object.UnitConfig.ParameterConfigName.c_str(), true))
+                        if (ImGui::Selectable(object.UnitConfigName.c_str(), false))
                         {
 
                         }
