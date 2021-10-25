@@ -23,7 +23,8 @@ private:
             {"generating", "Generating Object Parameter Database..."}, {"generating_info", "This could take a bit of time."},
             {"save", "Save"}, {"language", "Language"}, {"fontsize", "GUI Scale"}, {"restart_changes", "Restart Boo Editor for the changes to take effect."},
             {"file", "File"}, {"exit", "Exit"}, {"save_shortcut", "CTRL Q"}, {"stages", "Stages"}, {"open", "Open"}, {"open_shortcut", "CTRL O"},
-            {"t_sarc", "SARC archive"}, {"t_szs", "Yaz0-compressed SARC archive"}, {"scenario", "Scenario"}
+            {"t_sarc", "SARC archive"}, {"t_szs", "Yaz0-compressed SARC archive"}, {"scenario", "Scenario"}, {"object", "Object"},
+            {"no_object", "There are no objects selected."}, {"multiple_objects", "Multiple objects selected."}
         },
         { // German
             {"title", "Boo Editor"}, {"debug", "Debug"}, {"view", "Ansicht"}, {"object_view", "Objektansicht"},
@@ -35,7 +36,8 @@ private:
             {"generating", "Generiere Objektparameterdatenbank..."}, {"generating_info", "Dies könnte etwas dauern."},
             {"save", "Speichern"}, {"language", "Sprache"}, {"fontsize", "GUI-Skalierung"}, {"restart_changes", "Starte Boo Editor neu um die Änderungen wirksam zu machen."},
             {"file", "Datei"}, {"exit", "Schließen"}, {"save_shortcut", "STRG-Q"}, {"stages", "Level"}, {"open", "Öffnen"}, {"open_shortcut", "STRG-O"},
-            {"t_sarc", "SARC-Archiv"}, {"t_szs", "Yaz0-komprimiertes SARC-Archiv"}, {"scenario", "Szenario"}
+            {"t_sarc", "SARC-Archiv"}, {"t_szs", "Yaz0-komprimiertes SARC-Archiv"}, {"scenario", "Szenario"}, {"object", "Objekt"},
+            {"no_object", "Es sind keine Objekte ausgewählt."}, {"multiple_objects", "Mehrere Objekte ausgewählt."}
         }
     };
     static inline u8 language;

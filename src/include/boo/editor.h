@@ -21,6 +21,7 @@ public:
     void Draw();
     
     boo::Stage stage;
+    std::vector<std::string> cursel;
 
     u8 CurrentScenario = 0;
 };

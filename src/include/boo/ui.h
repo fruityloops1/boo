@@ -19,6 +19,8 @@ private:
     std::vector<boo::Editor> editors;
     int EditorSelected;
 
+    void ShowObject(std::vector<boo::Object*>& vo);
+
 public:
 
     int GetEditorSelected();

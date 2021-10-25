@@ -1,8 +1,7 @@
-#include "boo/stage.h"
-#include "nfd.h"
 #include <boo/config.h>
 #include <boo/localization.h>
 #include <boo/objparamdb.h>
+#include <boo/stage.h>
 #include <boo/ui.h>
 
 #include <filesystem>
@@ -107,26 +106,71 @@ namespace boo::ui
         }
     }
 
+    void boo::ui::UIContainer::ShowObject(std::vector<boo::Object*>& vo)
+    {
+        if (ImGui::Begin(boo::Localization::GetLocalized("object").c_str(), NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            if (vo.size() > 1)
+            {
+                ImGui::Text("%s", boo::Localization::GetLocalized("multiple_objects").c_str());
+            }
+            else if (vo.size() == 1)
+            {
+                ImGui::Text("%s", vo[0]->Id.c_str());
+            }
+            else
+            {
+                ImGui::Text("%s", boo::Localization::GetLocalized("no_object").c_str());
+            }
+            ImGui::End();
+        }
+    }
+
     void boo::ui::UIContainer::ShowObjectView()
     {
+        std::vector<boo::Object*> vo;
         if (ObjectViewOpen && editors.size() > 0 && ImGui::Begin(boo::Localization::GetLocalized("object_view").c_str()))
         {
+            boo::Editor& editor = editors[EditorSelected];
             boo::StageData& sd = editors[EditorSelected].stage.data;
             for (auto ol = sd.entries[editors[EditorSelected].CurrentScenario].object_lists.begin(); ol != sd.entries[editors[EditorSelected].CurrentScenario].object_lists.end(); ++ol)
             {
-                if (ImGui::TreeNode(ol->first.c_str()))
+                bool expanded = ImGui::TreeNode(ol->first.c_str());
+                for (boo::Object& object : ol->second.objects)
                 {
-                    for (boo::Object object : ol->second.objects)
+                    auto i = std::find(editor.cursel.begin(), editor.cursel.end(), object.Id);
+                    if (i != editor.cursel.end())
                     {
-                        if (ImGui::Selectable(object.UnitConfigName.c_str(), false))
+                        if (expanded)
                         {
-
+                            ImGui::PushID(object.Id.c_str());
+                            if (ImGui::Selectable(object.UnitConfigName.c_str(), true))
+                            {
+                                if (!IsKeyDown(KEY_LEFT_SHIFT)) editor.cursel.clear();
+                            }
+                            ImGui::PopID();
                         }
                     }
-                    ImGui::TreePop();
+                    else
+                    {
+                        if (expanded)
+                        {
+                            ImGui::PushID(object.Id.c_str());
+                            if (ImGui::Selectable(object.UnitConfigName.c_str(), false))
+                            {
+                                if (!IsKeyDown(KEY_LEFT_SHIFT)) editor.cursel.clear();
+                                editor.cursel.push_back(object.Id);
+                            }
+                            ImGui::PopID();
+                        }
+                    }
+                    if (i != editor.cursel.end())
+                        vo.push_back(&object);
                 }
+                if (expanded) ImGui::TreePop();
             }
             ImGui::End();
+            ShowObject(vo);
         }
     }
 
