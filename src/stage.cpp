@@ -174,6 +174,7 @@ namespace boo
                         {
                             o.comment = object.GetHash().at("comment").GetString();
                         } catch(std::bad_variant_access& e) {o.comment = std::string();}
+                        catch(std::out_of_range& e) {o.comment = std::string();}
 
                         for (auto param = object.GetHash().cbegin(); param != object.GetHash().cend(); ++param)
                         {
