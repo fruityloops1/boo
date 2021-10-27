@@ -57,7 +57,7 @@ namespace boo
         return 0;
     }
 
-    std::vector<u8> boo::Stage::Save()
+    std::vector<u8> boo::Stage::Save(bool compress)
     {
         std::string stagedata_file(Name);
         switch (type)
@@ -89,7 +89,9 @@ namespace boo
             writer.m_files[file->first] = file->second;
         }
         std::vector<u8> result = writer.Write().second;
-        return oead::yaz0::Compress(result, 0, 9);
+        if (compress)
+            return oead::yaz0::Compress(result, 0, 9);
+        else return result;
     }
 
     u8 boo::StageData::Load(oead::Byml& data)

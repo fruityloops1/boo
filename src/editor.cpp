@@ -14,7 +14,10 @@ void boo::Editor::LoadStage(std::string path)
 
 void boo::Editor::SaveStage(std::string path)
 {
-    std::vector<u8> file = stage.Save();
+    std::vector<u8> file;
+    if (path.ends_with(".sarc"))
+        file = stage.Save(false);
+    else file = stage.Save(true);
     std::ofstream stagefile2(path, std::ios::out | std::ios::binary);
     stagefile2.write(reinterpret_cast<const char*>(&file[0]), file.size()*sizeof(u8));
     stagefile2.close();

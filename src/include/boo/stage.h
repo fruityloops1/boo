@@ -65,7 +65,7 @@ namespace boo
     public:
         std::string Name;
         u8 Load(std::vector<u8> sarc);
-        std::vector<u8> Save();
+        std::vector<u8> Save(bool compress);
 
         StageData data;
         StageType type;
