@@ -9,8 +9,9 @@
 #include <imgui.h>
 #include <nfd.hpp>
 #include <raylib.h>
+#include <string>
 #include <thread>
-
+#include <iostream>
 namespace boo::ui
 {
 
@@ -75,19 +76,57 @@ namespace boo::ui
                 int sel = 0;
                 for (boo::Editor& editor : editors)
                 {
-                    auto tab = [&editor, this, &sel]()
+                    auto tab = [&editor, this, &sel]() -> int
                     {
                         ImGui::SliderInt(boo::Localization::GetLocalized("scenario").c_str(), &editor.CurrentScenario, 0, 14);
                         if (editor.CurrentScenario > editor.stage.data.entries.size() - 1) editor.CurrentScenario = editor.stage.data.entries.size() - 1;
                         if (editor.CurrentScenario < 0) editor.CurrentScenario = 0;
+                        if (ImGui::Button(boo::Localization::GetLocalized("close_stage").c_str()))
+                        {
+                            if (editor.Changed) ImGui::OpenPopup("save_sure");
+                            else return EditorSelected;
+                        }
+                        if (ImGui::BeginPopup("save_sure"))
+                        {
+                            ImGui::Text("%s", boo::Localization::GetLocalized("save_sure").c_str());
+                            if (ImGui::Button(boo::Localization::GetLocalized("yes").c_str())) return EditorSelected;
+                            ImGui::SameLine();
+                            if (ImGui::Button(boo::Localization::GetLocalized("no").c_str()))
+                            {
+                                ImGui::CloseCurrentPopup();
+                                return -1;
+                            }
+                            ImGui::EndPopup();
+                        }
                         ImGui::EndTabItem();
                         EditorSelected = sel;
+                        return -1;
                     };
-                    ImGui::PushID(editor.stage.Name.c_str());
+                    std::string id = editor.stage.Name.c_str();
+                    id.append(std::to_string(sel));
+                    ImGui::PushID(id.c_str());
                     if (editor.Changed)
                     {
-                        if (ImGui::BeginTabItem(editor.stage.Name.c_str(), NULL, ImGuiTabItemFlags_UnsavedDocument)) tab();
-                    } else if (ImGui::BeginTabItem(editor.stage.Name.c_str())) tab();
+                        if (ImGui::BeginTabItem(editor.stage.Name.c_str(), NULL, ImGuiTabItemFlags_UnsavedDocument))
+                        {
+                            int t = tab();
+                            if (t != -1)
+                            {
+                                editors.erase(editors.begin() + EditorSelected);
+                                EditorSelected = 0;
+                                break;
+                            }
+                        }
+                    } else if (ImGui::BeginTabItem(editor.stage.Name.c_str()))
+                    {
+                        int t = tab();
+                        if (t != -1)
+                        {
+                            editors.erase(editors.begin() + EditorSelected);
+                            EditorSelected = 0;
+                            break;
+                        }
+                    }
                         
                     ImGui::PopID();
                     sel++;
