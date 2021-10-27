@@ -172,6 +172,35 @@ namespace boo::ui
             }
             else if (vo.size() == 1)
             {
+
+                std::string temp = "Id: ";
+                temp.append(vo[0]->Id);
+                ImGui::Text("%s", temp.c_str());
+
+                temp = std::string("LayerConfigName: ");
+                temp.append(vo[0]->LayerConfigName);
+                ImGui::Text("%s", temp.c_str());
+
+                temp = std::string("ModelName: ");
+                temp.append(vo[0]->ModelName);
+                ImGui::Text("%s", temp.c_str());
+
+                temp = std::string("UnitConfigName: ");
+                temp.append(vo[0]->UnitConfigName);
+                ImGui::Text("%s", temp.c_str());
+
+                temp = std::string("comment: ");
+                temp.append(vo[0]->comment);
+                ImGui::Text("%s", temp.c_str());
+
+                temp = std::string("DisplayName: ");
+                temp.append(vo[0]->UnitConfig.DisplayName);
+                ImGui::Text("%s", temp.c_str());
+
+                temp = std::string("ParameterConfigName: ");
+                temp.append(vo[0]->UnitConfig.ParameterConfigName);
+                ImGui::Text("%s", temp.c_str());
+
                 float pos[3];
                 pos[0] = vo[0]->Translate.x;
                 pos[1] = vo[0]->Translate.y;
@@ -202,10 +231,50 @@ namespace boo::ui
                 scale[2] = vo[0]->Scale.z;
                 if (ImGui::DragFloat3(boo::Localization::GetLocalized("scale").c_str(), scale, 0.01))
                 {
+                    for (u8 i = 0; i < 3; i++) if (scale[i] < 0) scale[i] = 0;
                     vo[0]->Scale.x = scale[0];
                     vo[0]->Scale.y = scale[1];
                     vo[0]->Scale.z = scale[2];
                     edited = true;
+                }
+
+                ImGui::Separator();
+                for (auto property = vo[0]->extra_params.begin(); property != vo[0]->extra_params.end(); ++property)
+                {
+                    if (property->second.GetType() == oead::Byml::Type::Bool)
+                    {
+                        bool v = property->second.GetBool();
+                        if (ImGui::Checkbox(property->first.c_str(), &v))
+                        {
+                            property->second = oead::Byml(v);
+                            edited = true;
+                        }
+                    }
+                    else if (property->second.GetType() == oead::Byml::Type::Int)
+                    {
+                        int v = property->second.GetInt();
+                        if (ImGui::InputInt(property->first.c_str(), &v, 0))
+                        {
+                            property->second = oead::Byml(oead::Number<int>(v));
+                            edited = true;
+                        }
+                    }
+                    else if (property->second.GetType() == oead::Byml::Type::Float)
+                    {
+                        float v = property->second.GetFloat();
+                        if (ImGui::InputFloat(property->first.c_str(), &v, 0))
+                        {
+                            property->second = oead::Byml(oead::Number<float>(v));
+                            edited = true;
+                        }
+                    }
+                    else if (property->second.GetType() == oead::Byml::Type::String)
+                    {
+                        std::string temp = std::string(property->first);
+                        temp.append(": ");
+                        temp.append(property->second.GetString());
+                        ImGui::Text("%s", temp.c_str());
+                    }
                 }
             }
             else
@@ -239,6 +308,7 @@ namespace boo::ui
                             if (ImGui::Selectable(object.UnitConfigName.c_str(), true))
                             {
                                 if (!IsKeyDown(KEY_LEFT_SHIFT)) editor.cursel.clear();
+                                else editor.cursel.erase(i);
                             }
                             ImGui::PopID();
                         }
