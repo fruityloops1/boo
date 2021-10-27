@@ -15,6 +15,7 @@ private:
 public:
 
     void LoadStage(std::string path);
+    void SaveStage(std::string path);
 
     void Init();
     void Update();
@@ -23,7 +24,8 @@ public:
     boo::Stage stage;
     std::vector<std::string> cursel;
 
-    u8 CurrentScenario = 0;
+    int CurrentScenario = 0;
+    bool Changed = false;
 };
 
 }

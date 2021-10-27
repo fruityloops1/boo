@@ -158,6 +158,7 @@ void run(bool StageDataSet)
         EndDrawing();
 
 		if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_O)) ui.StageFileOpen();
+		if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_S) && ui.isEditorOpen) ui.StageFileSave();
 	}
 }
 

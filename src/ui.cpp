@@ -33,6 +33,22 @@ namespace boo::ui
         }
     }
 
+    void boo::ui::UIContainer::StageFileSave()
+    {
+        nfdchar_t *stagePath;
+        nfdfilteritem_t filter[2] = {{"SZS", "szs"}, {"SARC", "sarc"}};
+        nfdresult_t result = NFD::SaveDialog(stagePath, filter, 2, boo::Config::Get().StageDataPath.c_str());
+        if (result == NFD_OKAY)
+        {
+            std::string sdp(stagePath);
+            boo::Editor& neditor = editors[EditorSelected];
+            
+            neditor.SaveStage(sdp);
+
+            NFD::FreePath(stagePath);
+        }
+    }
+
     bool boo::ui::UIContainer::IsExit()
     {
         return Exit;
@@ -53,32 +69,32 @@ namespace boo::ui
     {
         if (ImGui::Begin(boo::Localization::GetLocalized("stages").c_str()))
         {
-            if (editors.size() == 0)
-            {
-
-            }
-            else
+            if (editors.size() > 0)
             {
                 ImGui::BeginTabBar("#stages");
                 int sel = 0;
                 for (boo::Editor& editor : editors)
                 {
-                    ImGui::PushID(editor.stage.Name.c_str());
-                    if (ImGui::BeginTabItem(editor.stage.Name.c_str()))
+                    auto tab = [&editor, this, &sel]()
                     {
-                        static int scenario = 0;  
-                        ImGui::SliderInt(boo::Localization::GetLocalized("scenario").c_str(), &scenario, 0, 14);
-                        if (scenario > editor.stage.data.entries.size() - 1) scenario = editor.stage.data.entries.size() - 1;
-                        if (scenario < 0) scenario = 0;
-                        editor.CurrentScenario = (u8) scenario;
+                        ImGui::SliderInt(boo::Localization::GetLocalized("scenario").c_str(), &editor.CurrentScenario, 0, 14);
+                        if (editor.CurrentScenario > editor.stage.data.entries.size() - 1) editor.CurrentScenario = editor.stage.data.entries.size() - 1;
+                        if (editor.CurrentScenario < 0) editor.CurrentScenario = 0;
                         ImGui::EndTabItem();
                         EditorSelected = sel;
-                    }
+                    };
+                    ImGui::PushID(editor.stage.Name.c_str());
+                    if (editor.Changed)
+                    {
+                        if (ImGui::BeginTabItem(editor.stage.Name.c_str(), NULL, ImGuiTabItemFlags_UnsavedDocument)) tab();
+                    } else if (ImGui::BeginTabItem(editor.stage.Name.c_str())) tab();
+                        
                     ImGui::PopID();
                     sel++;
                 }
                 ImGui::EndTabBar();
             }
+            else ImGui::Text("%s", boo::Localization::GetLocalized("no_stages").c_str());
             ImGui::End();
         }
         
@@ -86,13 +102,14 @@ namespace boo::ui
 
     void boo::ui::UIContainer::ShowMainMenuBar()
     {
+        isEditorOpen = !editors.empty();
         if (ImGui::BeginMainMenuBar())
         {
-
             if (ImGui::BeginMenu(boo::Localization::GetLocalized("file").c_str()))
             {
                 if (ImGui::MenuItem(boo::Localization::GetLocalized("open").c_str(), boo::Localization::GetLocalized("open_shortcut").c_str())) {StageFileOpen();}
-                if (ImGui::MenuItem(boo::Localization::GetLocalized("exit").c_str(), boo::Localization::GetLocalized("save_shortcut").c_str())) {TryExit();}
+                if (isEditorOpen && ImGui::MenuItem(boo::Localization::GetLocalized("save").c_str(), boo::Localization::GetLocalized("save_shortcut").c_str())) {StageFileSave();}
+                if (ImGui::MenuItem(boo::Localization::GetLocalized("exit").c_str(), boo::Localization::GetLocalized("exit_shortcut").c_str())) {TryExit();}
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu(boo::Localization::GetLocalized("view").c_str()))
@@ -106,8 +123,9 @@ namespace boo::ui
         }
     }
 
-    void boo::ui::UIContainer::ShowObject(std::vector<boo::Object*>& vo)
+    bool boo::ui::UIContainer::ShowObject(std::vector<boo::Object*>& vo)
     {
+        bool edited = false;
         if (ImGui::Begin(boo::Localization::GetLocalized("object").c_str(), NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
             if (vo.size() > 1)
@@ -116,7 +134,41 @@ namespace boo::ui
             }
             else if (vo.size() == 1)
             {
-                ImGui::Text("%s", vo[0]->Id.c_str());
+                float pos[3];
+                pos[0] = vo[0]->Translate.x;
+                pos[1] = vo[0]->Translate.y;
+                pos[2] = vo[0]->Translate.z;
+                if (ImGui::DragFloat3(boo::Localization::GetLocalized("position").c_str(), pos, 0.75))
+                {
+                    vo[0]->Translate.x = pos[0];
+                    vo[0]->Translate.y = pos[1];
+                    vo[0]->Translate.z = pos[2];
+                    edited = true;
+                }
+
+                float rot[3];
+                rot[0] = vo[0]->Rotate.x;
+                rot[1] = vo[0]->Rotate.y;
+                rot[2] = vo[0]->Rotate.z;
+                if (ImGui::DragFloat3(boo::Localization::GetLocalized("rotation").c_str(), rot, 0.5, -180, 180))
+                {
+                    vo[0]->Rotate.x = rot[0];
+                    vo[0]->Rotate.y = rot[1];
+                    vo[0]->Rotate.z = rot[2];
+                    edited = true;
+                }
+
+                float scale[3];
+                scale[0] = vo[0]->Scale.x;
+                scale[1] = vo[0]->Scale.y;
+                scale[2] = vo[0]->Scale.z;
+                if (ImGui::DragFloat3(boo::Localization::GetLocalized("scale").c_str(), scale, 0.01))
+                {
+                    vo[0]->Scale.x = scale[0];
+                    vo[0]->Scale.y = scale[1];
+                    vo[0]->Scale.z = scale[2];
+                    edited = true;
+                }
             }
             else
             {
@@ -124,6 +176,7 @@ namespace boo::ui
             }
             ImGui::End();
         }
+        return edited;
     }
 
     void boo::ui::UIContainer::ShowObjectView()
@@ -131,6 +184,7 @@ namespace boo::ui
         std::vector<boo::Object*> vo;
         if (ObjectViewOpen && editors.size() > 0 && ImGui::Begin(boo::Localization::GetLocalized("object_view").c_str()))
         {
+            ImGui::PushID(editors[EditorSelected].stage.Name.c_str());
             boo::Editor& editor = editors[EditorSelected];
             boo::StageData& sd = editors[EditorSelected].stage.data;
             for (auto ol = sd.entries[editors[EditorSelected].CurrentScenario].object_lists.begin(); ol != sd.entries[editors[EditorSelected].CurrentScenario].object_lists.end(); ++ol)
@@ -170,7 +224,8 @@ namespace boo::ui
                 if (expanded) ImGui::TreePop();
             }
             ImGui::End();
-            ShowObject(vo);
+            ImGui::PopID();
+            if (ShowObject(vo)) editor.Changed = true;
         }
     }
 

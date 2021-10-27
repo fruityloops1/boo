@@ -19,9 +19,11 @@ private:
     std::vector<boo::Editor> editors;
     int EditorSelected;
 
-    void ShowObject(std::vector<boo::Object*>& vo);
+    bool ShowObject(std::vector<boo::Object*>& vo);
 
 public:
+
+    bool isEditorOpen = false;
 
     int GetEditorSelected();
 
@@ -36,6 +38,7 @@ public:
     void ShowOPDBGeneratePopup();
 
     void StageFileOpen();
+    void StageFileSave();
     void TryExit();
 };
 
