@@ -1,6 +1,5 @@
 # Boo Editor
-Boo Editor is a Level Editor  for Super Mario Odyssey
-Currently only a library, heavy WIP
+Boo Editor is a Level Editor for Super Mario Odyssey
 
 ## Building
 
