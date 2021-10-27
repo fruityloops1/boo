@@ -9,9 +9,8 @@
 #include <imgui.h>
 #include <nfd.hpp>
 #include <raylib.h>
-#include <string>
 #include <thread>
-#include <iostream>
+
 namespace boo::ui
 {
 
