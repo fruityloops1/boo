@@ -11,7 +11,7 @@ namespace boo
         StageDataPath = reader.Get("config", "StageData", "");
         ObjectDataPath = reader.Get("config", "ObjectData", "");
         std::string lang = reader.Get("config", "language", "en");
-        std::string fontsizes = reader.Get("config", "fontsize", "16");
+        std::string fontsizes = reader.Get("config", "fontsize", "18");
         try
         {
             fontsize = std::stoi(fontsizes);
