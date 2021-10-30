@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <fstream>
 #include <imgui.h>
+#include <imgui_stdlib.h>
 #include <nfd.hpp>
 #include <raylib.h>
 #include <thread>
@@ -173,33 +174,26 @@ namespace boo::ui
             else if (vo.size() == 1)
             {
 
-                std::string temp = "Id: ";
-                temp.append(vo[0]->Id);
-                ImGui::Text("%s", temp.c_str());
+                auto textbox = [](std::string& value, const char* name)
+                {
+                    std::string vc = std::string(value);
+                    if (ImGui::InputText(name, &vc, ImGuiInputTextFlags_EnterReturnsTrue))
+                        value = std::string(vc);
+                };
 
-                temp = std::string("LayerConfigName: ");
-                temp.append(vo[0]->LayerConfigName);
-                ImGui::Text("%s", temp.c_str());
+                auto textbox_fake = [](std::string& value, const char* name)
+                {
+                    std::string vc = std::string(value);
+                    ImGui::InputText(name, &vc);
+                };
 
-                temp = std::string("ModelName: ");
-                temp.append(vo[0]->ModelName);
-                ImGui::Text("%s", temp.c_str());
-
-                temp = std::string("UnitConfigName: ");
-                temp.append(vo[0]->UnitConfigName);
-                ImGui::Text("%s", temp.c_str());
-
-                temp = std::string("comment: ");
-                temp.append(vo[0]->comment);
-                ImGui::Text("%s", temp.c_str());
-
-                temp = std::string("DisplayName: ");
-                temp.append(vo[0]->UnitConfig.DisplayName);
-                ImGui::Text("%s", temp.c_str());
-
-                temp = std::string("ParameterConfigName: ");
-                temp.append(vo[0]->UnitConfig.ParameterConfigName);
-                ImGui::Text("%s", temp.c_str());
+                textbox_fake(vo[0]->Id, boo::Localization::GetLocalized("param_Id").c_str());
+                textbox(vo[0]->LayerConfigName, boo::Localization::GetLocalized("param_LayerConfigName").c_str());
+                textbox(vo[0]->UnitConfigName, boo::Localization::GetLocalized("param_UnitConfigName").c_str());
+                textbox(vo[0]->UnitConfig.ParameterConfigName, boo::Localization::GetLocalized("param_ParameterConfigName").c_str());
+                textbox(vo[0]->ModelName, boo::Localization::GetLocalized("param_ModelName").c_str());
+                textbox(vo[0]->UnitConfig.DisplayName, boo::Localization::GetLocalized("param_DisplayName").c_str());
+                textbox(vo[0]->comment, boo::Localization::GetLocalized("param_comment").c_str());
 
                 float pos[3];
                 pos[0] = vo[0]->Translate.x;
@@ -270,10 +264,7 @@ namespace boo::ui
                     }
                     else if (property->second.GetType() == oead::Byml::Type::String)
                     {
-                        std::string temp = std::string(property->first);
-                        temp.append(": ");
-                        temp.append(property->second.GetString());
-                        ImGui::Text("%s", temp.c_str());
+                        textbox(property->second.GetString(), property->first.c_str());
                     }
                 }
             }

@@ -12,6 +12,7 @@ add_library(imgui STATIC
     lib/imgui/imgui_widgets.cpp
     lib/imgui/imgui_tables.cpp
     lib/imgui/backends/imgui_impl_opengl3.cpp
+    lib/imgui/misc/cpp/imgui_stdlib.cpp
     lib/imgui_raylib/imgui_impl_raylib.cpp
 )
 
@@ -27,6 +28,7 @@ include_directories(lib/raylib/src)
 include_directories(lib/imgui_raylib)
 include_directories(lib/imgui)
 include_directories(lib/imgui/backends)
+include_directories(lib/imgui/misc/cpp)
 include_directories(lib/nativefiledialog-extended/src/include)
 
 add_executable(boo src/boo.cpp src/config.cpp src/editor.cpp src/objparamdb.cpp src/stage.cpp src/ui.cpp src/include/boo/config.h src/include/boo/editor.h src/include/boo/localization.h src/include/boo/objparamdb.h src/include/boo/stage.h src/include/boo/ui.h)
