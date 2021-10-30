@@ -57,6 +57,8 @@ namespace boo
         u8 Load(oead::Byml& data);
         oead::Byml Save();
 
+        boo::Object* FindObject(std::string Id, int scenario);
+
         std::vector<StageDataEntry> entries;
     };
 
