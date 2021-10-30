@@ -28,7 +28,7 @@ private:
             {"position", "Position"}, {"rotation", "Rotation"}, {"scale", "Scale"}, {"save", "Save"}, {"save_shortcut", "CTRL S"},
             {"no_stages", "No stages opened."}, {"save_sure", "The file has unchanged changes. Are you sure?"}, {"yes", "Yes"}, {"no", "No"},
             {"close_stage", "Close stage"}, {"param_Id", "Object ID"}, {"param_LayerConfigName", "Layer"}, {"param_ModelName", "Model Name"}, 
-            {"param_UnitConfigName", "Object Name"}, {"param_ParameterConfigName", "Class Name"}, {"param_DisplayName", "Display Name"}, {"param_comment", "Comment"}
+            {"param_UnitConfigName", "Object Name"}, {"param_ParameterConfigName", "Class Name"}, {"param_DisplayName", "Display Name"}, {"param_comment", "Comment"}, {"filter", "Filter"}
         },
         { // German
             {"title", "Boo Editor"}, {"debug", "Debug"}, {"view", "Ansicht"}, {"object_view", "Objektansicht"},
@@ -45,7 +45,7 @@ private:
             {"position", "Position"}, {"rotation", "Drehung"}, {"scale", "Skalierung"}, {"save", "Speichern"}, {"save_shortcut", "STRG-S"},
             {"no_stages", "Keine Level geöffnet."}, {"save_sure", "Die Datei hat ungespeicherte Änderungen. Fortfahren?"}, {"yes", "Ja"}, {"no", "Nein"},
             {"close_stage", "Level schließen"}, {"param_Id", "Objekt-ID"}, {"param_LayerConfigName", "Ebene"}, {"param_ModelName", "Modelname"}, 
-            {"param_UnitConfigName", "Objektname"}, {"param_ParameterConfigName", "Klassenname"}, {"param_DisplayName", "Anzeigename"}, {"param_comment", "Kommentar"}
+            {"param_UnitConfigName", "Objektname"}, {"param_ParameterConfigName", "Klassenname"}, {"param_DisplayName", "Anzeigename"}, {"param_comment", "Kommentar"}, {"filter", "Filter"}
         }
     };
     static inline u8 language;

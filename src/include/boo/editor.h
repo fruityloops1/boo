@@ -2,6 +2,7 @@
 #define EDITOR_H
 
 #include <boo/stage.h>
+#include <string>
 
 #include <raylib.h>
 
@@ -26,6 +27,7 @@ public:
 
     int CurrentScenario = 0;
     bool Changed = false;
+    std::string filter;
 };
 
 }

@@ -302,6 +302,9 @@ namespace boo::ui
             ImGui::PushID(editors[EditorSelected].stage.Name.c_str());
             boo::Editor& editor = editors[EditorSelected];
             boo::StageData& sd = editors[EditorSelected].stage.data;
+
+            ImGui::InputText(boo::Localization::GetLocalized("filter").c_str(), &editor.filter);
+
             for (auto ol = sd.entries[editors[EditorSelected].CurrentScenario].object_lists.begin(); ol != sd.entries[editors[EditorSelected].CurrentScenario].object_lists.end(); ++ol)
             {
                 bool expanded = ImGui::TreeNode(ol->first.c_str());
@@ -313,11 +316,18 @@ namespace boo::ui
                         if (expanded)
                         {
                             ImGui::PushID(object.Id.c_str());
-                            if (ImGui::Selectable(object.UnitConfigName.c_str(), true))
+                            auto f = [&object, &editor, &i]()
                             {
-                                if (!IsKeyDown(KEY_LEFT_SHIFT)) editor.cursel.clear();
-                                else editor.cursel.erase(i);
-                            }
+                                if (ImGui::Selectable(object.UnitConfigName.c_str(), true))
+                                {
+                                    if (!IsKeyDown(KEY_LEFT_SHIFT)) editor.cursel.clear();
+                                    else editor.cursel.erase(i);
+                                }
+                            };
+                            if (editor.filter.empty())
+                                f();
+                            else if (object.UnitConfigName.find(editor.filter) != std::string::npos)
+                                f();
                             ImGui::PopID();
                         }
                     }
@@ -326,11 +336,18 @@ namespace boo::ui
                         if (expanded)
                         {
                             ImGui::PushID(object.Id.c_str());
-                            if (ImGui::Selectable(object.UnitConfigName.c_str(), false))
+                            auto f = [&object, &editor, &i]()
                             {
-                                if (!IsKeyDown(KEY_LEFT_SHIFT)) editor.cursel.clear();
-                                editor.cursel.push_back(object.Id);
-                            }
+                                if (ImGui::Selectable(object.UnitConfigName.c_str(), false))
+                                {
+                                    if (!IsKeyDown(KEY_LEFT_SHIFT)) editor.cursel.clear();
+                                    editor.cursel.push_back(object.Id);
+                                }
+                            };
+                            if (editor.filter.empty())
+                                f();
+                            else if (object.UnitConfigName.find(editor.filter) != std::string::npos)
+                                f();
                             ImGui::PopID();
                         }
                     }
