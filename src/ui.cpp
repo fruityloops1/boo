@@ -190,7 +190,21 @@ namespace boo::ui
                     ImGui::InputText(name, &vc);
                 };
 
-                textbox_fake(vo[0]->Id, boo::Localization::GetLocalized("param_Id").c_str());
+                std::string vc = std::string(vo[0]->Id);
+                if (ImGui::InputText(boo::Localization::GetLocalized("param_Id").c_str(), &vc, ImGuiInputTextFlags_EnterReturnsTrue))
+                {
+                    boo::Editor& editor = editors[EditorSelected];
+                    boo::Object* to = editor.stage.data.FindObject(vc, editor.CurrentScenario);
+                    if (!to)
+                    {
+                        edited = true;
+                        auto i = std::find(editor.cursel.begin(), editor.cursel.end(), vo[0]->Id);
+                        editor.cursel.erase(i);
+                        editor.cursel.push_back(vc);
+                        vo[0]->Id = std::string(vc);
+                    }          
+                }
+
                 textbox(vo[0]->LayerConfigName, boo::Localization::GetLocalized("param_LayerConfigName").c_str());
                 textbox(vo[0]->UnitConfigName, boo::Localization::GetLocalized("param_UnitConfigName").c_str());
                 textbox(vo[0]->UnitConfig.ParameterConfigName, boo::Localization::GetLocalized("param_ParameterConfigName").c_str());
