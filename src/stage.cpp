@@ -307,4 +307,29 @@ namespace boo
         }
         return b;
     }
+
+    boo::Object* boo::StageData::FindObject(std::string Id, int scenario)
+    {
+        boo::Object* found = nullptr;
+        for (auto ol = entries[scenario].object_lists.begin(); ol != entries[scenario].object_lists.end(); ++ol)
+        {
+            for (boo::Object& o : ol->second.objects)
+            {
+                std::function<void(boo::Object&)> rec;
+                rec = [&Id, &rec, &found](boo::Object& fo)
+                {
+                    if (fo.Id == Id) found = &fo;
+                    for (auto loi = fo.Links.begin(); loi != fo.Links.end(); ++loi)
+                    {
+                        for (boo::Object& lo : loi->second)
+                        {
+                            rec(lo);
+                        }
+                    }
+                };
+                rec(o);
+            }
+        }
+        return found;
+    }
 }
