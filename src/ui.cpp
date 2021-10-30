@@ -174,11 +174,14 @@ namespace boo::ui
             else if (vo.size() == 1)
             {
 
-                auto textbox = [](std::string& value, const char* name)
+                auto textbox = [&edited](std::string& value, const char* name)
                 {
                     std::string vc = std::string(value);
                     if (ImGui::InputText(name, &vc, ImGuiInputTextFlags_EnterReturnsTrue))
+                    {
+                        edited = true;
                         value = std::string(vc);
+                    }
                 };
 
                 auto textbox_fake = [](std::string& value, const char* name)
