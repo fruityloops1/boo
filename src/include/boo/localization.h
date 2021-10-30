@@ -20,7 +20,7 @@ private:
             {"browse", "Browse"}, {"stage_data_folder", "StageData folder"}, {"object_data_folder", "ObjectData folder"}, {"not_exist", "Folder does not exist"}, {"ok", "OK"},
             {"generate_opdb", "Object Parameter Database"}, {"generate", "Generate"},
             {"generate_notice", "In order to use Boo Editor, you need an Object Parameter Database. You can generate it using the StageData folder."},
-            {"generating", "Generating Object Parameter Database..."}, {"generating_info", "This could take a bit of time."},
+            {"generating", "Generating Object Parameter Database..."}, {"generating_info", "This could take a while."},
             {"save", "Save"}, {"language", "Language"}, {"fontsize", "GUI Scale"}, {"restart_changes", "Restart Boo Editor for the changes to take effect."},
             {"file", "File"}, {"exit", "Exit"}, {"exit_shortcut", "CTRL Q"}, {"stages", "Stages"}, {"open", "Open"}, {"open_shortcut", "CTRL O"},
             {"t_sarc", "SARC archive"}, {"t_szs", "Yaz0-compressed SARC archive"}, {"scenario", "Scenario"}, {"object", "Object"},
