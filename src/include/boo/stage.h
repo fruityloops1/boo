@@ -1,5 +1,4 @@
-#ifndef STAGE_H
-#define STAGE_H
+#pragma once
 
 #include <map>
 #include <oead/byml.h>
@@ -75,5 +74,3 @@ namespace boo
     };
 
 }
-
-#endif

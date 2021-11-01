@@ -1,5 +1,4 @@
-#ifndef OBJPARAMDB_H
-#define OBJPARAMDB_H
+#pragma once
 
 #include <map>
 #include <oead/byml.h>
@@ -29,5 +28,3 @@ public:
 };
 
 };
-
-#endif

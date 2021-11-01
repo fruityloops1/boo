@@ -1,5 +1,4 @@
-#ifndef UI_H
-#define UI_H
+#pragma once
 
 #include <boo/editor.h>
 #include <boo/stage.h>
@@ -43,5 +42,3 @@ public:
 };
 
 }
-
-#endif

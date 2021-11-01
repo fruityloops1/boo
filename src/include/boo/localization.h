@@ -1,5 +1,4 @@
-#ifndef LOCALIZATION_H
-#define LOCALIZATION_H
+#pragma once
 
 #include <oead/types.h>
 #include <string>
@@ -69,5 +68,3 @@ public:
 };
 
 }
-
-#endif

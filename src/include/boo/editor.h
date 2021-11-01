@@ -1,5 +1,4 @@
-#ifndef EDITOR_H
-#define EDITOR_H
+#pragma once
 
 #include <boo/stage.h>
 #include <string>
@@ -31,5 +30,3 @@ public:
 };
 
 }
-
-#endif
