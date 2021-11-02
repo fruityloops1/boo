@@ -13,6 +13,7 @@ private:
     bool DebugOpen = false;
     bool ObjectViewOpen = true;
     bool PreferencesOpen = false;
+    bool RandomizerOpen = false;
     bool Exit = false;
 
     std::vector<boo::Editor> editors;
@@ -32,6 +33,7 @@ public:
     void ShowMainMenuBar();
     void ShowObjectView();
     void ShowPreferences();
+    void ShowRandomizer();
     bool ShowStageDataFileSelectPopup();
     void ShowStages();
     void ShowOPDBGeneratePopup();

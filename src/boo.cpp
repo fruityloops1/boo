@@ -151,6 +151,7 @@ void run(bool StageDataSet)
 		ui.ShowDebug();
 		ui.ShowObjectView();
 		ui.ShowPreferences();
+		ui.ShowRandomizer();
         
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

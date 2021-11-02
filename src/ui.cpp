@@ -2,6 +2,7 @@
 #include <boo/localization.h>
 #include <boo/objparamdb.h>
 #include <boo/stage.h>
+#include <boo/randomizer.h>
 #include <boo/ui.h>
 
 #include <filesystem>
@@ -156,6 +157,11 @@ namespace boo::ui
                 if (ImGui::MenuItem(boo::Localization::GetLocalized("s_debug").c_str(), "", &DebugOpen)) {}
                 if (ImGui::MenuItem(boo::Localization::GetLocalized("s_object_view").c_str(), "", &ObjectViewOpen)) {}
                 if (ImGui::MenuItem(boo::Localization::GetLocalized("s_preferences").c_str(), "", &PreferencesOpen)) {}
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu(boo::Localization::GetLocalized("extras").c_str()))
+            {
+                if (ImGui::MenuItem(boo::Localization::GetLocalized("s_randomizer").c_str(), "", &RandomizerOpen)) {}
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();
@@ -366,7 +372,6 @@ namespace boo::ui
     {
         if (PreferencesOpen && ImGui::Begin(boo::Localization::GetLocalized("s_preferences").c_str(), NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
-
             boo::Config& config = boo::Config::Get();
 
             static char stagedata_path[255]; static bool stagedata_exists = false; static bool sds = false;
@@ -470,6 +475,129 @@ namespace boo::ui
             }
 
             if (restart_changes) ImGui::TextColored(ImVec4{255, 0, 0, 255}, "%s", boo::Localization::GetLocalized("restart_changes").c_str());
+            ImGui::End();
+        }
+    }
+
+    void boo::ui::UIContainer::ShowRandomizer()
+    {
+        if (RandomizerOpen && ImGui::Begin(boo::Localization::GetLocalized("s_randomizer").c_str(), NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            boo::Config& config = boo::Config::Get();
+
+            static bool ip = false;
+            static char stagedata_path[255]; 
+            static char output_path[255];
+
+            static bool shines = true;
+            static bool scenarios = false;
+
+            if (ip)
+            {
+                static std::string progress;
+                static bool init = false;
+
+                if (!init)
+                {
+                    std::thread randomizer_thread(boo::Randomizer::RandomizeLZ, shines, scenarios, std::string(stagedata_path), std::string(output_path), &progress);
+                    randomizer_thread.detach();
+                    init = true;
+                }
+
+                ImGui::Text("%s", progress.c_str());
+
+                if (progress == "Done")
+                {
+                    init = false;
+                    ip = false;
+                }
+
+            }
+            else
+            {
+
+                ImGui::TextWrapped("%s", boo::Localization::GetLocalized("randomizer_notice").c_str());
+
+                static bool stagedata_exists = false; static bool sds = false;
+                static bool output_exists = false; static bool sdos = false;
+                static bool restart_changes = false;
+                if (!sds)
+                {
+                    std::copy(config.StageDataPath.begin(), config.StageDataPath.end(), stagedata_path);
+                    stagedata_exists = std::filesystem::exists(stagedata_path);
+                    sds = true;
+                }
+                if (!sdos)
+                {
+                    std::copy(config.ObjectDataPath.begin(), config.ObjectDataPath.end(), output_path);
+                    output_exists = std::filesystem::exists(output_path);
+                    sdos = true;
+                }
+
+                static bool changed = false;
+
+                if (ImGui::InputText(boo::Localization::GetLocalized("stage_data_folder").c_str(), stagedata_path, IM_ARRAYSIZE(stagedata_path)))
+                {
+                    stagedata_exists = std::filesystem::exists(stagedata_path);
+                    changed = true;
+                    restart_changes = true;
+                }
+                ImGui::PushID("stagebrowse");
+                ImGui::SameLine();
+                if (ImGui::Button(boo::Localization::GetLocalized("browse").c_str()))
+                {
+                    nfdchar_t *sdPath;
+                    nfdresult_t result = NFD::PickFolder(sdPath, ".");
+                    if (result == NFD_OKAY)
+                    {
+                        std::string sdp(sdPath);
+                        std::fill(stagedata_path, stagedata_path + 255, 0);
+                        std::copy(sdp.begin(), sdp.end(), stagedata_path);
+                        NFD::FreePath(sdPath);
+                        stagedata_exists = std::filesystem::exists(stagedata_path);
+                           changed = true;
+                        restart_changes = true;
+                    }
+                }
+                ImGui::PopID();
+
+                if (!stagedata_exists)
+                    ImGui::TextColored(ImVec4{255, 0, 0, 255}, "%s", boo::Localization::GetLocalized("not_exist").c_str());
+            
+                if (ImGui::InputText(boo::Localization::GetLocalized("output_folder").c_str(), output_path, IM_ARRAYSIZE(output_path)))
+                {
+                    output_exists = std::filesystem::exists(output_path);
+                    changed = true;
+                    restart_changes = true;
+                }
+                ImGui::PushID("stageoutputbrowse");
+                ImGui::SameLine();
+                if (ImGui::Button(boo::Localization::GetLocalized("browse").c_str()))
+                {
+                    nfdchar_t *sdoPath;
+                    nfdresult_t result = NFD::PickFolder(sdoPath, ".");
+                    if (result == NFD_OKAY)
+                    {
+                        std::string odp(sdoPath);
+                        std::fill(output_path, output_path + 255, 0);
+                        std::copy(odp.begin(), odp.end(), output_path);
+                        NFD::FreePath(sdoPath);
+                        output_exists = std::filesystem::exists(output_path);
+                        changed = true;
+                        restart_changes = true;
+                    }
+                }
+
+                if (!output_exists)
+                    ImGui::TextColored(ImVec4{255, 0, 0, 255}, "%s", boo::Localization::GetLocalized("not_exist").c_str());
+
+                ImGui::Checkbox(boo::Localization::GetLocalized("randomize_shines").c_str(), &shines);
+                ImGui::Checkbox(boo::Localization::GetLocalized("randomize_scenarios").c_str(), &scenarios);
+
+                ImGui::PopID();
+                if (changed && stagedata_exists && output_exists && ImGui::Button(boo::Localization::GetLocalized("ok").c_str()))
+                    ip = true;
+            }
             ImGui::End();
         }
     }
