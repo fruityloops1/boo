@@ -510,6 +510,7 @@ namespace boo::ui
                 {
                     init = false;
                     ip = false;
+                    progress = std::string();
                 }
 
             }
