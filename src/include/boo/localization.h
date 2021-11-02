@@ -27,7 +27,10 @@ private:
             {"position", "Position"}, {"rotation", "Rotation"}, {"scale", "Scale"}, {"save", "Save"}, {"save_shortcut", "CTRL S"},
             {"no_stages", "No stages opened."}, {"save_sure", "The file has unchanged changes. Are you sure?"}, {"yes", "Yes"}, {"no", "No"},
             {"close_stage", "Close stage"}, {"param_Id", "Object ID"}, {"param_LayerConfigName", "Layer"}, {"param_ModelName", "Model Name"}, 
-            {"param_UnitConfigName", "Object Name"}, {"param_ParameterConfigName", "Class Name"}, {"param_DisplayName", "Display Name"}, {"param_comment", "Comment"}, {"filter", "Filter"}
+            {"param_UnitConfigName", "Object Name"}, {"param_ParameterConfigName", "Class Name"}, {"param_DisplayName", "Display Name"}, {"param_comment", "Comment"}, {"filter", "Filter"},
+            {"loading", "Loading"}, {"saving", "Saving"}, {"s_randomizer", "Randomizer"}, {"extras", "Extras"}, {"output_folder", "Output folder"},
+            {"randomize_shines", "Randomize moons"}, {"randomize_scenarios", "Randomize Kingdom loading zone scenarios"}, {"preparing", "Preparing"},
+            {"randomizer_notice", "This is a Randomizer that will shuffle up all loading zones.\nIt can also randomize moons, and the scenarios after entering a Kingdom loading zone."}
         },
         { // German
             {"title", "Boo Editor"}, {"debug", "Debug"}, {"view", "Ansicht"}, {"object_view", "Objektansicht"},
@@ -44,7 +47,10 @@ private:
             {"position", "Position"}, {"rotation", "Drehung"}, {"scale", "Skalierung"}, {"save", "Speichern"}, {"save_shortcut", "STRG-S"},
             {"no_stages", "Keine Level geöffnet."}, {"save_sure", "Die Datei hat ungespeicherte Änderungen. Fortfahren?"}, {"yes", "Ja"}, {"no", "Nein"},
             {"close_stage", "Level schließen"}, {"param_Id", "Objekt-ID"}, {"param_LayerConfigName", "Ebene"}, {"param_ModelName", "Modelname"}, 
-            {"param_UnitConfigName", "Objektname"}, {"param_ParameterConfigName", "Klassenname"}, {"param_DisplayName", "Anzeigename"}, {"param_comment", "Kommentar"}, {"filter", "Filter"}
+            {"param_UnitConfigName", "Objektname"}, {"param_ParameterConfigName", "Klassenname"}, {"param_DisplayName", "Anzeigename"}, {"param_comment", "Kommentar"}, {"filter", "Filter"},
+            {"loading", "Lade"}, {"saving", "Speichere"}, {"s_randomizer", "Randomizer"}, {"randomizer", "Randomizer"}, {"extras", "Extras"}, {"output_folder", "Ausgabeordner"},
+            {"randomize_shines", "Monde mischen"}, {"randomize_scenarios", "Königreichsladezonenszenarien mischen"}, {"preparing", "Bereite vor"},
+            {"randomizer_notice", "Dies ist ein Randomizer der alle Ladezonen vermischen wird.\nEr kann auch Monde, und Königreichsladezonenszenarien vermischen."}
         }
     };
     static inline u8 language;
