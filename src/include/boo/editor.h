@@ -22,7 +22,9 @@ public:
     void Draw();
     
     boo::Stage stage;
+
     std::vector<std::string> cursel;
+    std::deque<std::string> link_return;
 
     int CurrentScenario = 0;
     bool Changed = false;

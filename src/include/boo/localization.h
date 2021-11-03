@@ -31,7 +31,7 @@ private:
             {"loading", "Loading"}, {"saving", "Saving"}, {"s_randomizer", "Randomizer"}, {"extras", "Extras"}, {"output_folder", "Output folder"},
             {"randomize_shines", "Randomize moons"}, {"randomize_scenarios", "Randomize Kingdom loading zone scenarios"}, {"preparing", "Preparing"},
             {"randomizer_notice", "This is a Randomizer that will shuffle up all loading zones.\nIt can also randomize moons, and the scenarios after entering a Kingdom loading zone."},
-            {"properties", "Properties"}
+            {"properties", "Properties"}, {"links", "Links"}, {"return", "Return"}
         },
         { // German
             {"title", "Boo Editor"}, {"debug", "Debug"}, {"view", "Ansicht"}, {"object_view", "Objektansicht"},
@@ -52,7 +52,7 @@ private:
             {"loading", "Lade"}, {"saving", "Speichere"}, {"s_randomizer", "Randomizer"}, {"randomizer", "Randomizer"}, {"extras", "Extras"}, {"output_folder", "Ausgabeordner"},
             {"randomize_shines", "Monde mischen"}, {"randomize_scenarios", "Königreichsladezonenszenarien mischen"}, {"preparing", "Bereite vor"},
             {"randomizer_notice", "Dies ist ein Randomizer der alle Ladezonen vermischen wird.\nEr kann auch Monde, und Königreichsladezonenszenarien vermischen."},
-            {"properties", "Eigenschaften"}
+            {"properties", "Eigenschaften"}, {"links", "Verbindungen"}, {"return", "Zurück"}
         }
     };
     static inline u8 language;

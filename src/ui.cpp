@@ -173,12 +173,21 @@ namespace boo::ui
         bool edited = false;
         if (ImGui::Begin(boo::Localization::GetLocalized("object").c_str(), NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
+            boo::Editor& editor = editors[EditorSelected];
             if (vo.size() > 1)
             {
                 ImGui::Text("%s", boo::Localization::GetLocalized("multiple_objects").c_str());
             }
             else if (vo.size() == 1)
             {
+
+                if (!editor.link_return.empty())
+                    if (ImGui::Button(boo::Localization::GetLocalized("return").c_str()))
+                    {
+                        editor.cursel.clear();
+                        editor.cursel.push_back(editor.link_return[0]);
+                        editor.link_return.pop_front();
+                    }
 
                 auto textbox = [&edited](std::string& value, const char* name)
                 {
@@ -199,7 +208,6 @@ namespace boo::ui
                 std::string vc = std::string(vo[0]->Id);
                 if (ImGui::InputText(boo::Localization::GetLocalized("param_Id").c_str(), &vc, ImGuiInputTextFlags_EnterReturnsTrue))
                 {
-                    boo::Editor& editor = editors[EditorSelected];
                     boo::Object* to = editor.stage.data.FindObject(vc, editor.CurrentScenario);
                     if (!to)
                     {
@@ -256,7 +264,6 @@ namespace boo::ui
                 }
 
                 bool has_properties = !vo[0]->extra_params.empty();
-
                 if (has_properties) ImGui::Separator();
 
                 if (has_properties && ImGui::TreeNode(boo::Localization::GetLocalized("properties").c_str()))
@@ -297,6 +304,30 @@ namespace boo::ui
                     }
                     ImGui::TreePop();
                 }
+
+                bool has_links = !vo[0]->Links.empty();
+                if (has_links) ImGui::Separator();
+
+                if (has_links && ImGui::TreeNode(boo::Localization::GetLocalized("links").c_str()))
+                {
+                    for (auto link = vo[0]->Links.begin(); link != vo[0]->Links.end(); ++link)
+                    {
+                        if (ImGui::TreeNode(link->first.c_str()))
+                        {
+                            for (boo::Object& object : link->second)
+                            {
+                                if (ImGui::Selectable(object.UnitConfigName.c_str()))
+                                {
+                                    editor.cursel.clear();
+                                    editor.cursel.push_back(object.Id);
+                                    editor.link_return.push_front(vo[0]->Id);
+                                }
+                            }
+                            ImGui::TreePop();
+                        }
+                    }
+                    ImGui::TreePop();
+                }
             }
             else
             {
@@ -323,49 +354,74 @@ namespace boo::ui
                 bool expanded = ImGui::TreeNode(ol->first.c_str());
                 for (boo::Object& object : ol->second.objects)
                 {
-                    auto i = std::find(editor.cursel.begin(), editor.cursel.end(), object.Id);
-                    if (i != editor.cursel.end())
+                    auto show = [&editor, &expanded, &vo](boo::Object& object)
                     {
-                        if (expanded)
-                        {
-                            ImGui::PushID(object.Id.c_str());
-                            auto f = [&object, &editor, &i]()
+                        auto i = std::find(editor.cursel.begin(), editor.cursel.end(), object.Id);
+                        if (!object.IsLinkDest) {
+                            if (i != editor.cursel.end())
                             {
-                                if (ImGui::Selectable(object.UnitConfigName.c_str(), true))
+                                if (expanded)
                                 {
-                                    if (!IsKeyDown(KEY_LEFT_SHIFT)) editor.cursel.clear();
-                                    else editor.cursel.erase(i);
+                                    ImGui::PushID(object.Id.c_str());
+                                    auto f = [&object, &editor, &i]()
+                                    {
+                                        if (ImGui::Selectable(object.UnitConfigName.c_str(), true))
+                                        {
+                                            if (!IsKeyDown(KEY_LEFT_SHIFT)) editor.cursel.clear();
+                                            else editor.cursel.erase(i);
+                                            editor.link_return.clear();
+                                        }
+                                    };
+                                    if (editor.filter.empty())
+                                        f();
+                                    else if (object.UnitConfigName.find(editor.filter) != std::string::npos)
+                                        f();
+                                    ImGui::PopID();
                                 }
-                            };
-                            if (editor.filter.empty())
-                                f();
-                            else if (object.UnitConfigName.find(editor.filter) != std::string::npos)
-                                f();
-                            ImGui::PopID();
+                            }
+                            else
+                            {
+                                if (expanded)
+                                {
+                                    ImGui::PushID(object.Id.c_str());
+                                    auto f = [&object, &editor, &i]()
+                                    {
+                                        if (ImGui::Selectable(object.UnitConfigName.c_str(), false))
+                                        {
+                                            if (!IsKeyDown(KEY_LEFT_SHIFT)) editor.cursel.clear();
+                                            editor.cursel.push_back(object.Id);
+                                            editor.link_return.clear();
+                                        }
+                                    };
+                                    if (editor.filter.empty())
+                                        f();
+                                    else if (object.UnitConfigName.find(editor.filter) != std::string::npos)
+                                        f();
+                                    ImGui::PopID();
+                                }
+                            }
                         }
-                    }
-                    else
+                        if (i != editor.cursel.end())
+                        {
+                            if (object.IsLinkDest) vo.clear();
+                            vo.push_back(&object);
+                        }
+                    };
+
+                    std::function<void(boo::Object&)> hobject;
+                    hobject = [&hobject, &show](boo::Object& o)
                     {
-                        if (expanded)
+                        for (auto link = o.Links.begin(); link != o.Links.end(); ++link)
                         {
-                            ImGui::PushID(object.Id.c_str());
-                            auto f = [&object, &editor, &i]()
+                            for (boo::Object& link_object : link->second)
                             {
-                                if (ImGui::Selectable(object.UnitConfigName.c_str(), false))
-                                {
-                                    if (!IsKeyDown(KEY_LEFT_SHIFT)) editor.cursel.clear();
-                                    editor.cursel.push_back(object.Id);
-                                }
-                            };
-                            if (editor.filter.empty())
-                                f();
-                            else if (object.UnitConfigName.find(editor.filter) != std::string::npos)
-                                f();
-                            ImGui::PopID();
+                                hobject(link_object);
+                            }
                         }
-                    }
-                    if (i != editor.cursel.end())
-                        vo.push_back(&object);
+                        show(o);
+                    };
+                    hobject(object);
+
                 }
                 if (expanded) ImGui::TreePop();
             }
