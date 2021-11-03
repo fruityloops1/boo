@@ -6,7 +6,8 @@ namespace boo
 {
     class Randomizer
     {
-        public:
+    public:
         static void RandomizeLZ(bool shines, bool scenarios, std::string path, std::string output, std::string* progress = nullptr);
+        static void RandomizeShines(std::string path, std::string output);
     };
 }

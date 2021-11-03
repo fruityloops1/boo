@@ -562,8 +562,24 @@ namespace boo::ui
 
                 if (!init)
                 {
-                    std::thread randomizer_thread(boo::Randomizer::RandomizeLZ, shines, scenarios, std::string(stagedata_path), std::string(output_path), &progress);
+                    std::thread randomizer_thread(boo::Randomizer::RandomizeLZ, false, scenarios, std::string(stagedata_path), std::string(output_path), &progress);
                     randomizer_thread.detach();
+
+                    if (shines)
+                    {
+                        nfdchar_t *shineInfoPath;
+                        nfdfilteritem_t filter[1] = {{"ShineInfo.szs", "szs"}};
+                        nfdresult_t result = NFD::OpenDialog(shineInfoPath, filter, 1);
+                        if (result == NFD_OKAY)
+                        {
+                            std::string sdp(shineInfoPath);
+            
+                            boo::Randomizer::RandomizeShines(sdp, output_path);
+
+                            NFD::FreePath(shineInfoPath);
+                        }
+                    }
+
                     init = true;
                 }
 
