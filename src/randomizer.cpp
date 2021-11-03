@@ -314,4 +314,79 @@ namespace boo
     	stagefile2.close();
 
 	}
+
+	void Randomizer::RandomizeBGM(std::string path, std::string output)
+	{
+		std::string sounddata_path = std::string(output);
+		sounddata_path.append("/SoundData/");
+
+		if (!std::filesystem::exists(sounddata_path)) std::filesystem::create_directories(sounddata_path);
+
+		std::ifstream opf(path, std::ios::binary);
+    	std::istreambuf_iterator<char> start(opf), end;
+    	std::vector<u8> sarc(start, end);
+    	opf.close();
+
+		sarc = oead::yaz0::Decompress(sarc);
+
+		oead::Byml BgmStageInfoList;
+
+		oead::Sarc si = oead::Sarc(sarc);
+		for (auto f : si.GetFiles())
+		{
+			if (f.name == "BgmStageInfoList.byml")
+				BgmStageInfoList = oead::Byml::FromBinary(f.data);
+		}
+
+		std::vector<std::string> ResourceNames;
+
+		for (oead::Byml& e : BgmStageInfoList.GetHash().at("StageInfoList").GetArray())
+		{
+			for (oead::Byml& ssil : e.GetHash().at("StageScenarioInfoList").GetArray())
+			{
+				for (oead::Byml& spil : ssil.GetHash().at("StagePlayInfoList").GetArray())
+				{
+					ResourceNames.push_back(spil.GetHash().at("ResourceName").GetString());
+				}
+			}
+		}
+
+		std::random_device dev;
+        std::mt19937 rng(dev());
+        std::uniform_int_distribution<std::mt19937::result_type> rnms(0, ResourceNames.size() - 1);
+
+		for (oead::Byml& e : BgmStageInfoList.GetHash().at("StageInfoList").GetArray())
+		{
+			for (oead::Byml& ssil : e.GetHash().at("StageScenarioInfoList").GetArray())
+			{
+				for (oead::Byml& spil : ssil.GetHash().at("StagePlayInfoList").GetArray())
+				{
+					spil.GetHash()["ResourceName"] = ResourceNames[rnms(rng)];
+				}
+			}
+		}
+
+		oead::SarcWriter sw;
+		
+		for (auto f : si.GetFiles())
+		{
+			if (f.name != "BgmStageInfoList.byml")
+			{
+				sw.m_files[std::string(f.name)] = std::vector<u8>();
+				sw.m_files[std::string(f.name)].assign(f.data.begin(), f.data.end());
+			}
+		}
+
+		sw.m_files["BgmStageInfoList.byml"] = BgmStageInfoList.ToBinary(false, 3);
+
+		std::vector<u8> result = sw.Write().second;
+    	result = oead::yaz0::Compress(result, 0, 9);
+
+		std::string opath = std::string(sounddata_path);
+		opath.append("BgmDataBase.szs");
+
+    	std::ofstream stagefile2(opath, std::ios::out | std::ios::binary);
+    	stagefile2.write(reinterpret_cast<const char*>(&result[0]), result.size()*sizeof(u8));
+    	stagefile2.close();
+	}
 }

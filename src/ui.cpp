@@ -554,6 +554,7 @@ namespace boo::ui
 
             static bool shines = true;
             static bool scenarios = false;
+            static bool bgm = false;
 
             if (ip)
             {
@@ -580,6 +581,21 @@ namespace boo::ui
                         }
                     }
 
+                    if (bgm)
+                    {
+                        nfdchar_t *bgmDataBasePath;
+                        nfdfilteritem_t filter[1] = {{"BgmDataBase.szs", "szs"}};
+                        nfdresult_t result = NFD::OpenDialog(bgmDataBasePath, filter, 1);
+                        if (result == NFD_OKAY)
+                        {
+                            std::string sdp(bgmDataBasePath);
+            
+                            boo::Randomizer::RandomizeBGM(sdp, output_path);
+
+                            NFD::FreePath(bgmDataBasePath);
+                        }
+                    }
+
                     init = true;
                 }
 
@@ -591,7 +607,6 @@ namespace boo::ui
                     ip = false;
                     progress = std::string();
                 }
-
             }
             else
             {
@@ -673,6 +688,7 @@ namespace boo::ui
 
                 ImGui::Checkbox(boo::Localization::GetLocalized("randomize_shines").c_str(), &shines);
                 ImGui::Checkbox(boo::Localization::GetLocalized("randomize_scenarios").c_str(), &scenarios);
+                ImGui::Checkbox(boo::Localization::GetLocalized("randomize_bgm").c_str(), &bgm);
 
                 ImGui::PopID();
                 if (changed && stagedata_exists && output_exists && ImGui::Button(boo::Localization::GetLocalized("ok").c_str()))
