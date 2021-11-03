@@ -255,11 +255,11 @@ namespace boo::ui
                     edited = true;
                 }
 
-                bool has_properties = vo[0]->extra_params.empty();
+                bool has_properties = !vo[0]->extra_params.empty();
 
-                if (!has_properties) ImGui::Separator();
+                if (has_properties) ImGui::Separator();
 
-                if (!has_properties && ImGui::TreeNode(boo::Localization::GetLocalized("properties").c_str()))
+                if (has_properties && ImGui::TreeNode(boo::Localization::GetLocalized("properties").c_str()))
                 {
                     for (auto property = vo[0]->extra_params.begin(); property != vo[0]->extra_params.end(); ++property)
                     {
