@@ -255,40 +255,47 @@ namespace boo::ui
                     edited = true;
                 }
 
-                ImGui::Separator();
-                for (auto property = vo[0]->extra_params.begin(); property != vo[0]->extra_params.end(); ++property)
+                bool has_properties = vo[0]->extra_params.empty();
+
+                if (!has_properties) ImGui::Separator();
+
+                if (!has_properties && ImGui::TreeNode(boo::Localization::GetLocalized("properties").c_str()))
                 {
-                    if (property->second.GetType() == oead::Byml::Type::Bool)
+                    for (auto property = vo[0]->extra_params.begin(); property != vo[0]->extra_params.end(); ++property)
                     {
-                        bool v = property->second.GetBool();
-                        if (ImGui::Checkbox(property->first.c_str(), &v))
+                        if (property->second.GetType() == oead::Byml::Type::Bool)
                         {
-                            property->second = oead::Byml(v);
-                            edited = true;
+                            bool v = property->second.GetBool();
+                            if (ImGui::Checkbox(property->first.c_str(), &v))
+                            {
+                                property->second = oead::Byml(v);
+                                edited = true;
+                            }
+                        }
+                        else if (property->second.GetType() == oead::Byml::Type::Int)
+                        {
+                            int v = property->second.GetInt();
+                            if (ImGui::InputInt(property->first.c_str(), &v, 0))
+                            {
+                                property->second = oead::Byml(oead::Number<int>(v));
+                                edited = true;
+                            }
+                        }
+                        else if (property->second.GetType() == oead::Byml::Type::Float)
+                        {
+                            float v = property->second.GetFloat();
+                            if (ImGui::InputFloat(property->first.c_str(), &v, 0))
+                            {
+                                property->second = oead::Byml(oead::Number<float>(v));
+                                edited = true;
+                            }
+                        }
+                        else if (property->second.GetType() == oead::Byml::Type::String)
+                        {
+                            textbox(property->second.GetString(), property->first.c_str());
                         }
                     }
-                    else if (property->second.GetType() == oead::Byml::Type::Int)
-                    {
-                        int v = property->second.GetInt();
-                        if (ImGui::InputInt(property->first.c_str(), &v, 0))
-                        {
-                            property->second = oead::Byml(oead::Number<int>(v));
-                            edited = true;
-                        }
-                    }
-                    else if (property->second.GetType() == oead::Byml::Type::Float)
-                    {
-                        float v = property->second.GetFloat();
-                        if (ImGui::InputFloat(property->first.c_str(), &v, 0))
-                        {
-                            property->second = oead::Byml(oead::Number<float>(v));
-                            edited = true;
-                        }
-                    }
-                    else if (property->second.GetType() == oead::Byml::Type::String)
-                    {
-                        textbox(property->second.GetString(), property->first.c_str());
-                    }
+                    ImGui::TreePop();
                 }
             }
             else

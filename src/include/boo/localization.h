@@ -30,7 +30,8 @@ private:
             {"param_UnitConfigName", "Object Name"}, {"param_ParameterConfigName", "Class Name"}, {"param_DisplayName", "Display Name"}, {"param_comment", "Comment"}, {"filter", "Filter"},
             {"loading", "Loading"}, {"saving", "Saving"}, {"s_randomizer", "Randomizer"}, {"extras", "Extras"}, {"output_folder", "Output folder"},
             {"randomize_shines", "Randomize moons"}, {"randomize_scenarios", "Randomize Kingdom loading zone scenarios"}, {"preparing", "Preparing"},
-            {"randomizer_notice", "This is a Randomizer that will shuffle up all loading zones.\nIt can also randomize moons, and the scenarios after entering a Kingdom loading zone."}
+            {"randomizer_notice", "This is a Randomizer that will shuffle up all loading zones.\nIt can also randomize moons, and the scenarios after entering a Kingdom loading zone."},
+            {"properties", "Properties"}
         },
         { // German
             {"title", "Boo Editor"}, {"debug", "Debug"}, {"view", "Ansicht"}, {"object_view", "Objektansicht"},
@@ -50,7 +51,8 @@ private:
             {"param_UnitConfigName", "Objektname"}, {"param_ParameterConfigName", "Klassenname"}, {"param_DisplayName", "Anzeigename"}, {"param_comment", "Kommentar"}, {"filter", "Filter"},
             {"loading", "Lade"}, {"saving", "Speichere"}, {"s_randomizer", "Randomizer"}, {"randomizer", "Randomizer"}, {"extras", "Extras"}, {"output_folder", "Ausgabeordner"},
             {"randomize_shines", "Monde mischen"}, {"randomize_scenarios", "Königreichsladezonenszenarien mischen"}, {"preparing", "Bereite vor"},
-            {"randomizer_notice", "Dies ist ein Randomizer der alle Ladezonen vermischen wird.\nEr kann auch Monde, und Königreichsladezonenszenarien vermischen."}
+            {"randomizer_notice", "Dies ist ein Randomizer der alle Ladezonen vermischen wird.\nEr kann auch Monde, und Königreichsladezonenszenarien vermischen."},
+            {"properties", "Eigenschaften"}
         }
     };
     static inline u8 language;
