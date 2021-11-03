@@ -338,7 +338,7 @@ namespace boo
 				BgmStageInfoList = oead::Byml::FromBinary(f.data);
 		}
 
-		std::vector<std::string> ResourceNames;
+		std::map<std::string, bool> ResourceNames;
 
 		for (oead::Byml& e : BgmStageInfoList.GetHash().at("StageInfoList").GetArray())
 		{
@@ -346,7 +346,7 @@ namespace boo
 			{
 				for (oead::Byml& spil : ssil.GetHash().at("StagePlayInfoList").GetArray())
 				{
-					ResourceNames.push_back(spil.GetHash().at("ResourceName").GetString());
+					ResourceNames[spil.GetHash().at("ResourceName").GetString()] = true;
 				}
 			}
 		}
@@ -361,7 +361,9 @@ namespace boo
 			{
 				for (oead::Byml& spil : ssil.GetHash().at("StagePlayInfoList").GetArray())
 				{
-					spil.GetHash()["ResourceName"] = ResourceNames[rnms(rng)];
+					auto it = ResourceNames.begin();
+					std::advance(it, rnms(rng));
+					spil.GetHash()["ResourceName"] = it->first;
 				}
 			}
 		}
