@@ -54,7 +54,7 @@ private:
             {"randomize_shines", "Monde mischen"}, {"randomize_scenarios", "Königreichsladezonenszenarien mischen"}, {"preparing", "Bereite vor"},
             {"randomizer_notice", "Dies ist ein Randomizer der alle Ladezonen vermischen wird.\nEr kann auch Monde, Musik, und Königreichsladezonenszenarien vermischen."},
             {"properties", "Eigenschaften"}, {"links", "Verbindungen"}, {"return", "Zurück"}, {"randomize_bgm", "Zufällige Musik"},
-            {"object_already_exists", "Ein Objekt mit dieser ID existiert schon!"}, {"loaded_s", "Ladete "}, {"closed_s", "Schloß "}, {"randomizer_done", "Randomizer abgeschlossen"}
+            {"object_already_exists", "Ein Objekt mit dieser ID existiert schon!"}, {"loaded_s", "Lud "}, {"closed_s", "Schloß "}, {"randomizer_done", "Randomizer abgeschlossen"}
         }
     };
     static inline u8 language;
