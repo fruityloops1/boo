@@ -11,6 +11,7 @@ class ObjectParameterDatabase
 
 public:
     std::map<std::string, std::map<std::string, oead::Byml::Type>> opd;
+    std::unordered_map<std::string, std::string> objectLists;
     void Generate(std::string StageDataPath);
     std::string GenerateFromFile(std::string filename);
     void GenerateFromFile(std::string filename, std::string& stage);

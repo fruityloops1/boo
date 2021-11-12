@@ -64,7 +64,7 @@ namespace boo
                 for (oead::Byml object : object_list->second.GetArray())
                 {
                     std::function<void(oead::Byml&)> rl;
-                    rl = [&rl, this](oead::Byml& object) {
+                    rl = [&rl, this, &object_list](oead::Byml& object) {
                         for (auto param = object.GetHash().cbegin(); param != object.GetHash().cend(); ++param)
                         {
                             if (param->first != "Id" && param->first != "IsLinkDest" && param->first != "LayerConfigName"
@@ -73,6 +73,7 @@ namespace boo
                              && param->first != "UnitConfigName" && param->first != "comment" && param->first != "Links")
                             {
                                 opd[object.GetHash().at("UnitConfig").GetHash().at("ParameterConfigName").GetString()][param->first] = param->second.GetType();
+                                objectLists[object.GetHash().at("UnitConfig").GetHash().at("ParameterConfigName").GetString()] = object_list->first;
                             }
                         }
                         for (auto h = object.GetHash().at("Links").GetHash().begin(); h != object.GetHash().at("Links").GetHash().end(); ++h)
@@ -116,10 +117,13 @@ namespace boo
             entry.erase(0, entry.find(':') + 1);
             std::string param = entry.substr(0, entry.find(':'));
             entry.erase(0, entry.find(':') + 1);
-            std::string type = std::string(entry);
+            std::string type = entry.substr(0, entry.find(':'));
+            entry.erase(0, entry.find(':') + 1);
+            std::string object_list = std::string(entry);
             try
             {
                 opd[ParameterConfigName][param] = types_st.at(type);
+                objectLists[ParameterConfigName] = object_list;
             } catch(std::out_of_range& e) {opd_file.close(); return 1;}
         }
         opd_file.close();
@@ -136,7 +140,7 @@ namespace boo
             {
                 try
                 {
-                    opd_file << o->first << ":" << p->first << ":" << types_ts.at(p->second) << "\n";
+                    opd_file << o->first << ":" << p->first << ":" << types_ts.at(p->second) << ":" << objectLists[o->first] << "\n";
                 } catch(std::out_of_range& e) {opd_file.close(); return 1;}
             }
         }
