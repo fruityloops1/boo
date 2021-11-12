@@ -31,7 +31,8 @@ private:
             {"loading", "Loading"}, {"saving", "Saving"}, {"s_randomizer", "Randomizer"}, {"extras", "Extras"}, {"output_folder", "Output folder"},
             {"randomize_shines", "Randomize moons"}, {"randomize_scenarios", "Randomize Kingdom loading zone scenarios"}, {"preparing", "Preparing"},
             {"randomizer_notice", "This is a Randomizer that will shuffle up all loading zones.\nIt can also randomize moons, music, and the scenarios after entering a Kingdom loading zone."},
-            {"properties", "Properties"}, {"links", "Links"}, {"return", "Return"}, {"randomize_bgm", "Randomize music"}
+            {"properties", "Properties"}, {"links", "Links"}, {"return", "Return"}, {"randomize_bgm", "Randomize music"},
+            {"object_already_exists", "An object with that ID already exists!"}, {"loaded_s", "Loaded "}, {"closed_s", "Closed "}, {"randomizer_done", "Done randomizing"}
         },
         { // German
             {"title", "Boo Editor"}, {"debug", "Debug"}, {"view", "Ansicht"}, {"object_view", "Objektansicht"},
@@ -52,7 +53,8 @@ private:
             {"loading", "Lade"}, {"saving", "Speichere"}, {"s_randomizer", "Randomizer"}, {"randomizer", "Randomizer"}, {"extras", "Extras"}, {"output_folder", "Ausgabeordner"},
             {"randomize_shines", "Monde mischen"}, {"randomize_scenarios", "Königreichsladezonenszenarien mischen"}, {"preparing", "Bereite vor"},
             {"randomizer_notice", "Dies ist ein Randomizer der alle Ladezonen vermischen wird.\nEr kann auch Monde, Musik, und Königreichsladezonenszenarien vermischen."},
-            {"properties", "Eigenschaften"}, {"links", "Verbindungen"}, {"return", "Zurück"}, {"randomize_bgm", "Zufällige Musik"}
+            {"properties", "Eigenschaften"}, {"links", "Verbindungen"}, {"return", "Zurück"}, {"randomize_bgm", "Zufällige Musik"},
+            {"object_already_exists", "Ein Objekt mit dieser ID existiert schon!"}, {"loaded_s", "Ladete "}, {"closed_s", "Schloß "}, {"randomizer_done", "Randomizer abgeschlossen"}
         }
     };
     static inline u8 language;

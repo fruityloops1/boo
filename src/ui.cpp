@@ -16,6 +16,35 @@
 namespace boo::ui
 {
 
+    void boo::ui::UIContainer::StatusBar::update()
+    {
+        if (framesUntilClose > 0)
+        {
+            framesUntilClose--;
+
+            ImGui::Separator();
+
+            if (isError)
+                ImGui::TextColored(ImVec4(255, 0, 0, 255), "%s", message.c_str());
+            else
+                ImGui::Text("%s", message.c_str());
+        }
+    }
+
+    void boo::ui::UIContainer::StatusBar::info(std::string message)
+    {
+        isError = false;
+        this->message = std::string(message);
+        framesUntilClose = 300;
+    }
+
+    void boo::ui::UIContainer::StatusBar::error(std::string message)
+    {
+        isError = true;
+        this->message = std::string(message);
+        framesUntilClose = 300;
+    }
+
     int boo::ui::UIContainer::GetEditorSelected() {return EditorSelected;}
 
     void boo::ui::UIContainer::StageFileOpen()
@@ -30,6 +59,11 @@ namespace boo::ui
             boo::Editor& neditor = editors[editors.size() - 1];
             
             neditor.LoadStage(sdp);
+
+            std::string status_string = boo::Localization::GetLocalized("loaded_s");
+            status_string.append(neditor.stage.Name);
+
+            statusBar.info(status_string.c_str());
 
             NFD::FreePath(stagePath);
         }
@@ -113,6 +147,10 @@ namespace boo::ui
                             int t = tab();
                             if (t != -1)
                             {
+                                std::string status_message = boo::Localization::GetLocalized("closed_s");
+                                status_message.append(editors[EditorSelected].stage.Name);
+                                statusBar.info(status_message);
+
                                 editors.erase(editors.begin() + EditorSelected);
                                 EditorSelected = 0;
                                 break;
@@ -123,6 +161,10 @@ namespace boo::ui
                         int t = tab();
                         if (t != -1)
                         {
+                            std::string status_message = boo::Localization::GetLocalized("closed_s");
+                            status_message.append(editors[EditorSelected].stage.Name);
+                            statusBar.info(status_message);
+
                             editors.erase(editors.begin() + EditorSelected);
                             EditorSelected = 0;
                             break;
@@ -164,6 +206,7 @@ namespace boo::ui
                 if (ImGui::MenuItem(boo::Localization::GetLocalized("s_randomizer").c_str(), "", &RandomizerOpen)) {}
                 ImGui::EndMenu();
             }
+            statusBar.update();
             ImGui::EndMainMenuBar();
         }
     }
@@ -216,7 +259,9 @@ namespace boo::ui
                         editor.cursel.erase(i);
                         editor.cursel.push_back(vc);
                         vo[0]->Id = std::string(vc);
-                    }          
+                    }
+                    else
+                        statusBar.error(boo::Localization::GetLocalized("object_already_exists"));
                 }
 
                 textbox(vo[0]->LayerConfigName, boo::Localization::GetLocalized("param_LayerConfigName").c_str());
@@ -606,6 +651,7 @@ namespace boo::ui
                     init = false;
                     ip = false;
                     progress = std::string();
+                    statusBar.info(boo::Localization::GetLocalized("randomizer_done"));
                 }
             }
             else
