@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <boo/stage.h>
 #include <oead/byml.h>
 #include <oead/sarc.h>
@@ -331,5 +332,39 @@ namespace boo
             }
         }
         return found;
+    }
+
+    bool boo::StageData::DeleteObject(std::string Id, int scenario)
+    {
+        for (auto ol = entries[scenario].object_lists.begin(); ol != entries[scenario].object_lists.end(); ++ol)
+        {
+            auto object = ol->second.objects.begin();
+            while (object != ol->second.objects.end())
+            {
+                std::function<bool(boo::Object&)> rec;
+                rec = [&Id, &rec](boo::Object& fo)
+                {
+                    if (fo.Id == Id) return true;
+                    for (auto loi = fo.Links.begin(); loi != fo.Links.end(); ++loi)
+                    {
+                        auto lo = loi->second.begin();
+                        while (lo != loi->second.end())
+                        {
+                            if (rec(*lo))
+                            {
+                                loi->second.erase(lo);
+                            } else ++lo;
+                        }
+                    }
+                    return false;
+                };
+                if (rec(*object))
+                {
+                    ol->second.objects.erase(object);
+                    return true;
+                } else ++object;
+            }
+        }
+        return false;
     }
 }

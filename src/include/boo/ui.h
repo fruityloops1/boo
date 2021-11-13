@@ -55,6 +55,8 @@ public:
     void StageFileOpen();
     void StageFileSave();
     void TryExit();
+
+    void updateCurrentEditor();
 };
 
 }

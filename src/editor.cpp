@@ -1,6 +1,7 @@
 #include <boo/editor.h>
 
 #include <fstream>
+#include <raylib.h>
 
 void boo::Editor::LoadStage(std::string path)
 {
@@ -22,4 +23,18 @@ void boo::Editor::SaveStage(std::string path)
     stagefile2.write(reinterpret_cast<const char*>(&file[0]), file.size()*sizeof(u8));
     stagefile2.close();
     Changed = false;
+}
+
+void boo::Editor::Update()
+{
+    if (IsKeyPressed(KEY_DELETE))
+    {
+        auto selection = cursel.begin();
+        while (selection != cursel.end())
+        {
+            if (stage.data.DeleteObject(*selection, CurrentScenario))
+                Changed = true;
+            cursel.erase(selection);
+        }
+    }
 }

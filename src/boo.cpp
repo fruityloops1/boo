@@ -30,7 +30,8 @@ int resources()
     	io.Fonts->AddFontFromFileTTF(DEFAULT_FONT, boo::Config::Get().fontsize, NULL, io.Fonts->GetGlyphRangesJapanese());
 		done--;
 	}
-
+	ImGui::StyleColorsLight();
+	/*
 	ImVec4* colors = ImGui::GetStyle().Colors;
   	colors[ImGuiCol_Text]                   = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
   	colors[ImGuiCol_TextDisabled]           = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
@@ -109,7 +110,7 @@ int resources()
   	style.GrabRounding = 1;
   	style.LogSliderDeadzone = 4;
   	style.TabRounding = 1;
-	
+	*/
 	return done;
 }
 
@@ -152,6 +153,8 @@ void run(bool StageDataSet)
 		ui.ShowObjectView();
 		ui.ShowPreferences();
 		ui.ShowRandomizer();
+
+		ui.updateCurrentEditor();
         
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

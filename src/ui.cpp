@@ -849,4 +849,12 @@ namespace boo::ui
     {
         Exit = true;
     }
+
+    void boo::ui::UIContainer::updateCurrentEditor()
+    {
+        if (editors.size() > 0)
+        {
+            editors[EditorSelected].Update();
+        }
+    }
 }

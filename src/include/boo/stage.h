@@ -57,6 +57,7 @@ namespace boo
         oead::Byml Save();
 
         boo::Object* FindObject(std::string Id, int scenario);
+        bool DeleteObject(std::string Id, int scenario);
 
         std::vector<StageDataEntry> entries;
     };
