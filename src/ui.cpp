@@ -69,20 +69,39 @@ namespace boo::ui
         }
     }
 
-    void boo::ui::UIContainer::stageFileSave()
+    void boo::ui::UIContainer::stageFileSave(bool as)
     {
-        nfdchar_t *stagePath;
-        nfdfilteritem_t filter[2] = {{"SZS", "szs"}, {"SARC", "sarc"}};
-        nfdresult_t result = NFD::SaveDialog(stagePath, filter, 2, boo::Config::Get().stageDataPath.c_str());
-        if (result == NFD_OKAY)
-        {
-            std::string sdp(stagePath);
-            boo::Editor& neditor = editors[editorSelected];
-            
-            neditor.saveStage(sdp);
+        boo::Editor& neditor = editors[editorSelected];
 
-            NFD::FreePath(stagePath);
+        auto infoSaved = [this, &neditor]()
+        {
+            std::string status_string = boo::Localization::getLocalized("saved_s");
+            status_string.append(neditor.stage.name);
+            statusBar.info(status_string.c_str());
+        };
+
+        if (!neditor.lastSaved.has_parent_path() || neditor.lastSaved.empty() || as)
+        {
+            nfdchar_t *stagePath;
+            nfdfilteritem_t filter[2] = {{"SZS", "szs"}, {"SARC", "sarc"}};
+            nfdresult_t result = NFD::SaveDialog(stagePath, filter, 2, boo::Config::Get().stageDataPath.c_str());
+            if (result == NFD_OKAY)
+            {
+                std::string sdp(stagePath);
+            
+                neditor.saveStage(sdp);
+                neditor.lastSaved = std::filesystem::path(sdp);
+
+                infoSaved();
+
+                NFD::FreePath(stagePath);
+            }
+            return;
         }
+
+        neditor.saveStage(neditor.lastSaved);
+        infoSaved();
+        
     }
 
     bool boo::ui::UIContainer::isExit()
@@ -189,9 +208,13 @@ namespace boo::ui
         {
             if (ImGui::BeginMenu(boo::Localization::getLocalized("file").c_str()))
             {
-                if (ImGui::MenuItem(boo::Localization::getLocalized("open").c_str(), boo::Localization::getLocalized("open_shortcut").c_str())) {stageFileOpen();}
-                if (isEditorOpen && ImGui::MenuItem(boo::Localization::getLocalized("save").c_str(), boo::Localization::getLocalized("save_shortcut").c_str())) {stageFileSave();}
-                if (ImGui::MenuItem(boo::Localization::getLocalized("exit").c_str(), boo::Localization::getLocalized("exit_shortcut").c_str())) {tryExit();}
+                if (ImGui::MenuItem(boo::Localization::getLocalized("open").c_str(), boo::Localization::getLocalized("open_shortcut").c_str())) stageFileOpen();
+                if (isEditorOpen)
+                {
+                    if (ImGui::MenuItem(boo::Localization::getLocalized("save").c_str(), boo::Localization::getLocalized("save_shortcut").c_str())) stageFileSave(false);
+                    if (ImGui::MenuItem(boo::Localization::getLocalized("save_as").c_str(), boo::Localization::getLocalized("save_as_shortcut").c_str())) stageFileSave(true);
+                }
+                if (ImGui::MenuItem(boo::Localization::getLocalized("exit").c_str(), boo::Localization::getLocalized("exit_shortcut").c_str())) tryExit();
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu(boo::Localization::getLocalized("view").c_str()))

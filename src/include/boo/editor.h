@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boo/stage.h>
+#include <filesystem>
 #include <string>
 
 #include <raylib.h>
@@ -12,7 +13,6 @@ class Editor
 {
 private:
     Camera camera;
-
 public:
     void loadStage(std::string path);
     void saveStage(std::string path);
@@ -29,6 +29,8 @@ public:
     int currentScenario = 0;
     bool changed = false;
     std::string filter;
+
+    std::filesystem::path lastSaved;
 };
 
 }

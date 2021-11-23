@@ -36,7 +36,6 @@ private:
     bool showObject(std::vector<boo::Object*>& vo);
 
 public:
-
     bool isEditorOpen = false;
 
     int getEditorSelected();
@@ -53,7 +52,7 @@ public:
     void showOPDBGeneratePopup();
 
     void stageFileOpen();
-    void stageFileSave();
+    void stageFileSave(bool as);
     void tryExit();
 
     void updateCurrentEditor();
