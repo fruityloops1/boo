@@ -117,7 +117,7 @@ int resources()
 void run(bool StageDataSet)
 {
 	SetTraceLogLevel(25);
-	InitWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, boo::Localization::GetLocalized("title").c_str());
+	InitWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, boo::Localization::getLocalized("title").c_str());
 	SetTargetFPS(FPS_CAP);
 
 	boo::ui::UIContainer ui;
@@ -130,10 +130,10 @@ void run(bool StageDataSet)
 
 	resources();
 
-	while (!ui.IsExit())
+	while (!ui.isExit())
 	{
-		if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_Q)) ui.TryExit();
-		if (WindowShouldClose()) ui.TryExit();
+		if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_Q)) ui.tryExit();
+		if (WindowShouldClose()) ui.tryExit();
 
 		ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplRaylib_NewFrame();
@@ -144,15 +144,15 @@ void run(bool StageDataSet)
 
         ClearBackground(BLACK);
 
-		if (!StageDataSet) StageDataSet = ui.ShowStageDataFileSelectPopup();
-		else if (!boo::ObjectParameterDatabase::Get().loaded) {ui.ShowOPDBGeneratePopup();}
+		if (!StageDataSet) StageDataSet = ui.showStageDataFileSelectPopup();
+		else if (!boo::ObjectParameterDatabase::Get().loaded) {ui.showOPDBGeneratePopup();}
         
-        ui.ShowMainMenuBar();
-		ui.ShowStages();
-		ui.ShowDebug();
-		ui.ShowObjectView();
-		ui.ShowPreferences();
-		ui.ShowRandomizer();
+        ui.showMainMenuBar();
+		ui.showStages();
+		ui.showDebug();
+		ui.showObjectView();
+		ui.showPreferences();
+		ui.showRandomizer();
 
 		ui.updateCurrentEditor();
         
@@ -161,8 +161,8 @@ void run(bool StageDataSet)
 
         EndDrawing();
 
-		if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_O)) ui.StageFileOpen();
-		if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_S) && ui.isEditorOpen) ui.StageFileSave();
+		if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_O)) ui.stageFileOpen();
+		if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_S) && ui.isEditorOpen) ui.stageFileSave();
 	}
 }
 
@@ -176,12 +176,12 @@ int main()
 		c.Save("boo.ini");
 	}
 
-	boo::Localization::SetLanguage(c.language);
+	boo::Localization::setLanguage(c.language);
 
 	boo::ObjectParameterDatabase& opdb = boo::ObjectParameterDatabase::Get();
-	if (std::filesystem::exists("db.opdb")) opdb.Load("db.opdb");
+	if (std::filesystem::exists("db.opdb")) opdb.load("db.opdb");
 	
 	NFD_Init();
-	run(std::filesystem::exists(c.StageDataPath));
+	run(std::filesystem::exists(c.stageDataPath));
 	return 0;
 }

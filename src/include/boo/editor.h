@@ -12,22 +12,22 @@ class Editor
 {
 private:
     Camera camera;
+
 public:
+    void loadStage(std::string path);
+    void saveStage(std::string path);
 
-    void LoadStage(std::string path);
-    void SaveStage(std::string path);
-
-    void Init();
-    void Update();
-    void Draw();
+    void init();
+    void update();
+    void draw();
     
     boo::Stage stage;
 
     std::vector<std::string> cursel;
     std::deque<std::string> link_return;
 
-    int CurrentScenario = 0;
-    bool Changed = false;
+    int currentScenario = 0;
+    bool changed = false;
     std::string filter;
 };
 

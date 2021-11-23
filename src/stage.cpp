@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <boo/stage.h>
 #include <oead/byml.h>
 #include <oead/sarc.h>
@@ -7,7 +6,7 @@
 
 namespace boo
 {
-    u8 boo::Stage::Load(std::vector<u8> sarc)
+    u8 boo::Stage::load(std::vector<u8> sarc)
     {
         if (sarc.size() < 20) return 0;
         if (sarc[0] == 'Y' && sarc[1] == 'a' && sarc[2] == 'z' && sarc[3] == '0')
@@ -44,7 +43,7 @@ namespace boo
                     temp = temp.substr(0, temp.size() - 10);
                     type = boo::StageType::Sound;
                 }
-                Name = std::string(temp);
+                name = std::string(temp);
 
                 stagedata = oead::Byml::FromBinary(file.data);
                 if (stagedata.GetType() == oead::Byml::Type::Null) return 3;
@@ -54,13 +53,13 @@ namespace boo
         }
         if (!loaded) return 2;
         
-        data.Load(stagedata);
+        data.load(stagedata);
         return 0;
     }
 
-    std::vector<u8> boo::Stage::Save(bool compress)
+    std::vector<u8> boo::Stage::save(bool compress)
     {
-        std::string stagedata_file(Name);
+        std::string stagedata_file(name);
         switch (type)
         {
             case boo::StageType::Design:
@@ -81,7 +80,7 @@ namespace boo
             default: break;
         }
 
-        level_archive[stagedata_file] = data.Save().ToBinary(false, 3);
+        level_archive[stagedata_file] = data.save().ToBinary(false, 3);
         oead::SarcWriter writer;
         writer.SetMode(oead::SarcWriter::Mode::New);
         writer.SetEndianness(oead::util::Endianness::Little);
@@ -95,7 +94,7 @@ namespace boo
         else return result;
     }
 
-    u8 boo::StageData::Load(oead::Byml& data)
+    u8 boo::StageData::load(oead::Byml& data)
     {
         for (u32 i = 0; i < data.GetArray().size(); i++)
         {
@@ -196,7 +195,7 @@ namespace boo
         return 0;
     }
 
-    oead::Byml boo::StageData::Save()
+    oead::Byml boo::StageData::save()
     {
         oead::Byml b = oead::Byml(std::vector<oead::Byml>());
         u32 ac = 0;
@@ -309,7 +308,7 @@ namespace boo
         return b;
     }
 
-    boo::Object* boo::StageData::FindObject(std::string Id, int scenario)
+    boo::Object* boo::StageData::findObject(std::string Id, int scenario)
     {
         boo::Object* found = nullptr;
         for (auto ol = entries[scenario].object_lists.begin(); ol != entries[scenario].object_lists.end(); ++ol)
@@ -334,7 +333,7 @@ namespace boo
         return found;
     }
 
-    bool boo::StageData::DeleteObject(std::string Id, int scenario)
+    bool boo::StageData::deleteObject(std::string Id, int scenario)
     {
         for (auto ol = entries[scenario].object_lists.begin(); ol != entries[scenario].object_lists.end(); ++ol)
         {

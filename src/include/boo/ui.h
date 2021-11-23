@@ -22,39 +22,39 @@ class UIContainer
     };
 
 private:
-    bool DebugOpen = false;
-    bool ObjectViewOpen = true;
-    bool PreferencesOpen = false;
-    bool RandomizerOpen = false;
-    bool Exit = false;
+    bool debugOpen = false;
+    bool objectViewOpen = true;
+    bool preferencesOpen = false;
+    bool randomizerOpen = false;
+    bool exit = false;
 
     std::vector<boo::Editor> editors;
-    int EditorSelected;
+    int editorSelected;
 
     StatusBar statusBar;
 
-    bool ShowObject(std::vector<boo::Object*>& vo);
+    bool showObject(std::vector<boo::Object*>& vo);
 
 public:
 
     bool isEditorOpen = false;
 
-    int GetEditorSelected();
+    int getEditorSelected();
 
-    bool IsExit();
+    bool isExit();
 
-    void ShowDebug();
-    void ShowMainMenuBar();
-    void ShowObjectView();
-    void ShowPreferences();
-    void ShowRandomizer();
-    bool ShowStageDataFileSelectPopup();
-    void ShowStages();
-    void ShowOPDBGeneratePopup();
+    void showDebug();
+    void showMainMenuBar();
+    void showObjectView();
+    void showPreferences();
+    void showRandomizer();
+    bool showStageDataFileSelectPopup();
+    void showStages();
+    void showOPDBGeneratePopup();
 
-    void StageFileOpen();
-    void StageFileSave();
-    void TryExit();
+    void stageFileOpen();
+    void stageFileSave();
+    void tryExit();
 
     void updateCurrentEditor();
 };

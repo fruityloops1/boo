@@ -13,12 +13,12 @@
 namespace boo
 {
 
-    void boo::ObjectParameterDatabase::GenerateFromFile(std::string filename, std::string& stage)
+    void boo::ObjectParameterDatabase::generateFromFile(std::string filename, std::string& stage)
     {
-        stage = GenerateFromFile(filename);
+        stage = generateFromFile(filename);
     }
 
-    std::string boo::ObjectParameterDatabase::GenerateFromFile(std::string filename)
+    std::string boo::ObjectParameterDatabase::generateFromFile(std::string filename)
     {
         std::ifstream stage_file(filename, std::ios::in | std::ios::binary);
         std::vector<u8> sarc((std::istreambuf_iterator<char>(stage_file)), std::istreambuf_iterator<char>());
@@ -92,12 +92,12 @@ namespace boo
         return Name;
     }
 
-    void boo::ObjectParameterDatabase::Generate(std::string StageDataPath)
+    void boo::ObjectParameterDatabase::generate(std::string StageDataPath)
     {
         for (const auto& sf : std::filesystem::directory_iterator(StageDataPath))
         {
             if (sf.is_directory()) continue;
-            GenerateFromFile(sf.path());
+            generateFromFile(sf.path());
         }
         loaded = true;
     }
@@ -107,7 +107,7 @@ namespace boo
 
     // Basic file format for saving the database
 
-    u8 boo::ObjectParameterDatabase::Load(std::string filename)
+    u8 boo::ObjectParameterDatabase::load(std::string filename)
     {
         std::ifstream opd_file(filename);
         for (std::string entry; std::getline(opd_file, entry);)
@@ -131,7 +131,7 @@ namespace boo
         return 0;
     }
 
-    u8 boo::ObjectParameterDatabase::Save(std::string filename)
+    u8 boo::ObjectParameterDatabase::save(std::string filename)
     {
         std::ofstream opd_file(filename);
         for (auto o = opd.cbegin(); o != opd.cend(); ++o)

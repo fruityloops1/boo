@@ -8,8 +8,8 @@ namespace boo
     {
         INIReader reader(file);
         if (reader.ParseError() != 0) return 1;
-        StageDataPath = reader.Get("config", "StageData", "");
-        ObjectDataPath = reader.Get("config", "ObjectData", "");
+        stageDataPath = reader.Get("config", "StageData", "");
+        objectDataPath = reader.Get("config", "ObjectData", "");
         std::string lang = reader.Get("config", "language", "en");
         std::string fontsizes = reader.Get("config", "fontsize", "18");
         try
@@ -26,8 +26,8 @@ namespace boo
     {
         std::ofstream ini(file);
         ini << "[config]\n";
-        ini << "StageData=" << StageDataPath << "\n";
-        ini << "ObjectData=" << ObjectDataPath << "\n";
+        ini << "StageData=" << stageDataPath << "\n";
+        ini << "ObjectData=" << objectDataPath << "\n";
         std::string lang = "en";
         if (language == 1) lang = "de";
         ini << "language=" << lang << "\n";

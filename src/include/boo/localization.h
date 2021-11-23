@@ -59,7 +59,7 @@ private:
     };
     static inline u8 language;
 public:
-    static bool SetLanguage(u8 lang)
+    static bool setLanguage(u8 lang)
     {
         if (lang >= 2)
         {
@@ -68,7 +68,7 @@ public:
         boo::Localization::language = lang;
         return true;
     }
-    static std::string GetLocalized(std::string identifier)
+    static inline std::string getLocalized(std::string identifier)
     {
         try
         {

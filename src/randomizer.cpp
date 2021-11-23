@@ -11,7 +11,7 @@
 
 namespace boo
 {
-    void Randomizer::RandomizeLZ(bool shines, bool scenarios, std::string path, std::string output, std::string* progress)
+    void Randomizer::randomizeLZ(bool shines, bool scenarios, std::string path, std::string output, std::string* progress)
     {
 	    std::vector<boo::Stage> stages_data;
 
@@ -24,7 +24,7 @@ namespace boo
 
 		if (progress != nullptr)
         {
-            *progress = boo::Localization::GetLocalized("preparing");
+            *progress = boo::Localization::getLocalized("preparing");
         }
 
 		int max_stage = 1;
@@ -54,7 +54,7 @@ namespace boo
 
             if (progress != nullptr)
             {
-                *progress = boo::Localization::GetLocalized("loading");
+                *progress = boo::Localization::getLocalized("loading");
                 progress->append(" ");
                 progress->append(sf.path().filename());
                 progress->append(" (");
@@ -64,7 +64,7 @@ namespace boo
                 progress->append(")");
             }
 
-		    stage.Load(sarc);
+		    stage.load(sarc);
 
 		    for (boo::StageDataEntry& sde : stage.data.entries)
 		    {
@@ -97,9 +97,9 @@ namespace boo
 
             if (progress != nullptr)
             {
-                *progress = boo::Localization::GetLocalized("saving");
+                *progress = boo::Localization::getLocalized("saving");
                 progress->append(" ");
-                progress->append(stage.Name);
+                progress->append(stage.name);
                 progress->append(" (");
 				progress->append(std::to_string(current_stage));
                 progress->append("/");
@@ -158,9 +158,9 @@ namespace boo
 		    }
 
 		    std::vector<u8> file;
-    	    file = stage.Save(true);
+    	    file = stage.save(true);
 		    std::string opath = std::string(stagedata_path);
-		    opath.append(stage.Name);
+		    opath.append(stage.name);
 		    opath.append("Map.szs");
     	    std::ofstream stagefile2(opath, std::ios::out | std::ios::binary);
     	    stagefile2.write(reinterpret_cast<const char*>(&file[0]), file.size()*sizeof(u8));
@@ -190,7 +190,7 @@ namespace boo
 		int UniqueId;
 	};
 
-	void Randomizer::RandomizeShines(std::string path, std::string output)
+	void Randomizer::randomizeShines(std::string path, std::string output)
 	{
 		std::string systemdata_path = std::string(output);
 		systemdata_path.append("/SystemData/");
@@ -315,7 +315,7 @@ namespace boo
 
 	}
 
-	void Randomizer::RandomizeBGM(std::string path, std::string output)
+	void Randomizer::randomizeBGM(std::string path, std::string output)
 	{
 		std::string sounddata_path = std::string(output);
 		sounddata_path.append("/SoundData/");

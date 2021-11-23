@@ -53,11 +53,11 @@ namespace boo
     class StageData
     {
     public:
-        u8 Load(oead::Byml& data);
-        oead::Byml Save();
+        u8 load(oead::Byml& data);
+        oead::Byml save();
 
-        boo::Object* FindObject(std::string Id, int scenario);
-        bool DeleteObject(std::string Id, int scenario);
+        boo::Object* findObject(std::string Id, int scenario);
+        bool deleteObject(std::string Id, int scenario);
 
         std::vector<StageDataEntry> entries;
     };
@@ -65,9 +65,9 @@ namespace boo
     class Stage
     {
     public:
-        std::string Name;
-        u8 Load(std::vector<u8> sarc);
-        std::vector<u8> Save(bool compress);
+        std::string name;
+        u8 load(std::vector<u8> sarc);
+        std::vector<u8> save(bool compress);
 
         StageData data;
         StageType type;
