@@ -1,6 +1,7 @@
 #include <boo/editor.h>
 
 #include <fstream>
+#include <imgui.h>
 #include <raylib.h>
 
 void boo::Editor::LoadStage(std::string path)
@@ -27,7 +28,7 @@ void boo::Editor::SaveStage(std::string path)
 
 void boo::Editor::Update()
 {
-    if (IsKeyPressed(KEY_DELETE))
+    if (IsKeyPressed(KEY_DELETE) && !ImGui::GetIO().WantCaptureKeyboard && !ImGui::GetIO().WantCaptureMouse)
     {
         auto selection = cursel.begin();
         while (selection != cursel.end())
